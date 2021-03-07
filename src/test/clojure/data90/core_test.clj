@@ -134,6 +134,13 @@
              [[:hours :hours :sum]]
              dataset)))
 
+    (testing "Nil dataset"
+      (is (= {} (data90/tree-group [:x] [[:x :x :sum]] nil)))
+      (is (= {} (data90/tree-group nil nil nil))))
+
+    (testing "Empty dataset"
+      (is (= {} (data90/tree-group [:x] [[:x :x :sum]] []))))
+
     (testing "Metadata"
       (is (= {:formula [[:x :x :sum]]} (meta (data90/tree-group [:x] [[:x :x :sum]] [])))))
 
