@@ -226,3 +226,12 @@
                [:site_name :shift_name :operator_name :context_date :operation_name]
                [[:hours :timestamp_delta_as_hour :sum]]
                dataset1))))))
+
+(deftest summary-test
+  (is (= {:x-sum 10}
+         (data90/summary
+           (data90/tree-group
+             [:operation_name]
+             [[:x-sum :x :sum]]
+             [{:a "Doing A" :x 3}
+              {:a "Doing B" :x 7}])))))
