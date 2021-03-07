@@ -4,6 +4,8 @@
 
             [data90.core :as data90]))
 
+(def dataset1 (read-string (slurp (io/resource "dataset1.edn"))))
+
 (deftest aggregate-test
   (testing "Sum"
     (let [rows [{:x 3 :y 2}
@@ -55,9 +57,7 @@
                   :operator_code "O2"
                   :operator_name "Carlinhos"
                   :date "2021-03-06"
-                  :hours 15}]
-
-        dataset1 (read-string (slurp (io/resource "dataset1.edn")))]
+                  :hours 15}]]
 
     (is (= {"Adubação"
             [{:sum 15}]
@@ -234,4 +234,11 @@
              [:operation_name]
              [[:x-sum :x :sum]]
              [{:a "Doing A" :x 3}
-              {:a "Doing B" :x 7}])))))
+              {:a "Doing B" :x 7}]))))
+
+  (is (= {:hours-sum 72.0}
+         (data90/summary
+           (data90/tree-group
+             [:operation_name]
+             [[:hours-sum :timestamp_delta_as_hour :sum]]
+             dataset1)))))
