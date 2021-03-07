@@ -1,0 +1,352 @@
+[{:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Alecio Morais de Almeida"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 0.04909527777777778
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Alecio Morais de Almeida"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 11.548865833333334
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Alecio Morais de Almeida"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 0.19172638888888888
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Alecio Morais de Almeida"
+  :context_date "20210305"
+  :operation_name "Motor Ocioso Sem Apontamento"
+  :timestamp_delta_as_hour 0.20390472222222222
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Alecio Morais de Almeida"
+  :context_date "20210305"
+  :operation_name "Pulverização"
+  :timestamp_delta_as_hour 0.006407777777777778
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Abastecimento de Calda"
+  :timestamp_delta_as_hour 0.40753666666666666
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Abastecimento de Diesel"
+  :timestamp_delta_as_hour 0.12691833333333333
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Aguardando Ordem"
+  :timestamp_delta_as_hour 0.3666872222222222
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Aplicação de Limpeza"
+  :timestamp_delta_as_hour 1.4583391666666667
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 1.5929277777777777
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 0.9764066666666666
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Desligamento Sem Apontamento"
+  :timestamp_delta_as_hour 0.460545
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 1.9992377777777777
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Limpeza de Bico e Filtro"
+  :timestamp_delta_as_hour 0.36504888888888887
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Motor Ocioso Sem Apontamento"
+  :timestamp_delta_as_hour 1.3392155555555556
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Parada Sem Apontamento"
+  :timestamp_delta_as_hour 1.8406713888888888
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Pulverização"
+  :timestamp_delta_as_hour 0.7775436111111111
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Danilo Eduardo Maciel Botelho"
+  :context_date "20210305"
+  :operation_name "Refeição"
+  :timestamp_delta_as_hour 0.28892194444444447
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Abastecimento de Calda"
+  :timestamp_delta_as_hour 0.41191555555555553
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Aguardando Ordem"
+  :timestamp_delta_as_hour 4.624975
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 0.5903263888888889
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 3.983371388888889
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 1.6461369444444445
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Leandro Caires Santos"
+  :context_date "20210305"
+  :operation_name "Pulverização"
+  :timestamp_delta_as_hour 0.7432747222222222
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Abastecimento de Calda"
+  :timestamp_delta_as_hour 0.0018997222222222221
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 0.9672452777777778
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 5.184098611111111
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Desligamento Sem Apontamento"
+  :timestamp_delta_as_hour 0.2702513888888889
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 2.422464722222222
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Motor Ocioso Sem Apontamento"
+  :timestamp_delta_as_hour 0.6835369444444445
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Parada Sem Apontamento"
+  :timestamp_delta_as_hour 0.32365083333333333
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Nabor Botós Loureiro de Moraes"
+  :context_date "20210305"
+  :operation_name "Pulverização"
+  :timestamp_delta_as_hour 2.1468525
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Abastecimento de Calda"
+  :timestamp_delta_as_hour 0.4297447222222222
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 0.56082
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 5.759536388888889
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 2.2672097222222223
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Limpeza de Bico e Filtro"
+  :timestamp_delta_as_hour 1.0802316666666667
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Parada Sem Apontamento"
+  :timestamp_delta_as_hour 0.07162777777777778
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Pulverização"
+  :timestamp_delta_as_hour 0.8319555555555556
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Osvaldo Paulista Rodrigues"
+  :context_date "20210305"
+  :operation_name "Refeição"
+  :timestamp_delta_as_hour 0.9988741666666666
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Ricardo Barbosa"
+  :context_date "20210305"
+  :operation_name "Aguardando Ordem"
+  :timestamp_delta_as_hour 4.034454444444444
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Ricardo Barbosa"
+  :context_date "20210305"
+  :operation_name "Auto Deslocamento"
+  :timestamp_delta_as_hour 0.04411333333333333
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Ricardo Barbosa"
+  :context_date "20210305"
+  :operation_name "Clima"
+  :timestamp_delta_as_hour 3.5573083333333333
+  :d "operation_name"
+  :is_leaf true}
+ {:site_name "Chapadão do Sul"
+  :shift_name "Diurno"
+  :operator_name "Ricardo Barbosa"
+  :context_date "20210305"
+  :operation_name "Fim de Turno"
+  :timestamp_delta_as_hour 4.364123888888889
+  :d "operation_name"
+  :is_leaf true}]

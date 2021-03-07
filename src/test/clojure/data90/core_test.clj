@@ -1,5 +1,7 @@
 (ns data90.core-test
   (:require [clojure.test :refer :all]
+            [clojure.java.io :as io]
+
             [data90.core :as data90]))
 
 (deftest aggregate-test
@@ -53,7 +55,9 @@
                   :operator_code "O2"
                   :operator_name "Carlinhos"
                   :date "2021-03-06"
-                  :hours 15}]]
+                  :hours 15}]
+
+        dataset1 (read-string (slurp (io/resource "dataset1.edn")))]
 
     (is (= {"Adubação"
             [{:sum 15}]
@@ -128,4 +132,87 @@
            (data90/tree-group
              [:operator_name :date :operation_name]
              [[:hours :hours :sum]]
-             dataset)))))
+             dataset)))
+
+    (testing "Dataset 1"
+      (is (= {"Chapadão do Sul"
+              [{:hours 71.99999999999999}
+               {"Diurno"
+                [{:hours 71.99999999999999}
+                 {"Alecio Morais de Almeida"
+                  [{:hours 12.0}
+                   {"20210305"
+                    [{:hours 12.0}
+                     {"Auto Deslocamento" [{:hours 0.04909527777777778}]
+                      "Clima" [{:hours 11.548865833333334}]
+                      "Fim de Turno" [{:hours 0.19172638888888888}]
+                      "Motor Ocioso Sem Apontamento" [{:hours 0.20390472222222222}]
+                      "Pulverização" [{:hours 0.006407777777777778}]}]}]
+
+                  "Danilo Eduardo Maciel Botelho"
+                  [{:hours 12.0}
+                   {"20210305"
+                    [{:hours 12.0}
+                     {"Abastecimento de Calda" [{:hours 0.40753666666666666}]
+                      "Abastecimento de Diesel" [{:hours 0.12691833333333333}]
+                      "Aguardando Ordem" [{:hours 0.3666872222222222}]
+                      "Aplicação de Limpeza" [{:hours 1.4583391666666667}]
+                      "Auto Deslocamento" [{:hours 1.5929277777777777}]
+                      "Clima" [{:hours 0.9764066666666666}]
+                      "Desligamento Sem Apontamento" [{:hours 0.460545}]
+                      "Fim de Turno" [{:hours 1.9992377777777777}]
+                      "Limpeza de Bico e Filtro" [{:hours 0.36504888888888887}]
+                      "Motor Ocioso Sem Apontamento" [{:hours 1.3392155555555556}]
+                      "Parada Sem Apontamento" [{:hours 1.8406713888888888}]
+                      "Pulverização" [{:hours 0.7775436111111111}]
+                      "Refeição" [{:hours 0.28892194444444447}]}]}]
+
+                  "Leandro Caires Santos"
+                  [{:hours 12.000000000000002}
+                   {"20210305"
+                    [{:hours 12.000000000000002}
+                     {"Abastecimento de Calda" [{:hours 0.41191555555555553}]
+                      "Aguardando Ordem" [{:hours 4.624975}]
+                      "Auto Deslocamento" [{:hours 0.5903263888888889}]
+                      "Clima" [{:hours 3.983371388888889}]
+                      "Fim de Turno" [{:hours 1.6461369444444445}]
+                      "Pulverização" [{:hours 0.7432747222222222}]}]}]
+
+                  "Nabor Botós Loureiro de Moraes"
+                  [{:hours 12.0}
+                   {"20210305"
+                    [{:hours 12.0}
+                     {"Abastecimento de Calda" [{:hours 0.0018997222222222221}]
+                      "Auto Deslocamento" [{:hours 0.9672452777777778}]
+                      "Clima" [{:hours 5.184098611111111}]
+                      "Desligamento Sem Apontamento" [{:hours 0.2702513888888889}]
+                      "Fim de Turno" [{:hours 2.422464722222222}]
+                      "Motor Ocioso Sem Apontamento" [{:hours 0.6835369444444445}]
+                      "Parada Sem Apontamento" [{:hours 0.32365083333333333}]
+                      "Pulverização" [{:hours 2.1468525}]}]}]
+
+                  "Osvaldo Paulista Rodrigues"
+                  [{:hours 12.0}
+                   {"20210305"
+                    [{:hours 12.0}
+                     {"Abastecimento de Calda" [{:hours 0.4297447222222222}]
+                      "Auto Deslocamento" [{:hours 0.56082}]
+                      "Clima" [{:hours 5.759536388888889}]
+                      "Fim de Turno" [{:hours 2.2672097222222223}]
+                      "Limpeza de Bico e Filtro" [{:hours 1.0802316666666667}]
+                      "Parada Sem Apontamento" [{:hours 0.07162777777777778}]
+                      "Pulverização" [{:hours 0.8319555555555556}]
+                      "Refeição" [{:hours 0.9988741666666666}]}]}]
+
+                  "Ricardo Barbosa"
+                  [{:hours 12.0}
+                   {"20210305"
+                    [{:hours 12.0}
+                     {"Aguardando Ordem" [{:hours 4.034454444444444}]
+                      "Auto Deslocamento" [{:hours 0.04411333333333333}]
+                      "Clima" [{:hours 3.5573083333333333}]
+                      "Fim de Turno" [{:hours 4.364123888888889}]}]}]}]}]}
+             (data90/tree-group
+               [:site_name :shift_name :operator_name :context_date :operation_name]
+               [[:hours :timestamp_delta_as_hour :sum]]
+               dataset1))))))
