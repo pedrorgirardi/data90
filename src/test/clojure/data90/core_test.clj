@@ -134,6 +134,9 @@
              [[:hours :hours :sum]]
              dataset)))
 
+    (testing "Metadata"
+      (is (= {:formula [[:x :x :sum]]} (meta (data90/tree-group [:x] [[:x :x :sum]] [])))))
+
     (testing "Dataset 1"
       (is (= {"Chapadão do Sul"
               [{:hours 71.99999999999999}
