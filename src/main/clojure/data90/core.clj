@@ -9,8 +9,7 @@
                [k (case a
                     :sum
                     (+ (or (get M k) 0)
-                       ;; I'm not sure if it's a good idea to fallback to looking up 'k'.
-                       (or (v row) (k row) 0))
+                       (or (v row) 0))
 
                     nil)]))
            (into {})))
@@ -35,5 +34,13 @@
 
 (defn summary [tree-grouped]
   (let [{:keys [formula]} (meta tree-grouped)
+
+        ;; Adjust formula since tree-grouped
+        ;; already had its keys mapped.
+        formula (map
+                  (fn [[k _ a]]
+                    [k k a])
+                  formula)
+
         dataset (map first (vals tree-grouped))]
     (aggregate formula dataset)))
