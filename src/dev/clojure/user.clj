@@ -111,55 +111,44 @@
 
   (keys *1)
 
-  ;; =>
 
-  {[:operator_name "Carlinhos"]
-   [{:operator_name "Carlinhos"
-     :hours 30}]
+  (defn tree-grouped-rows [D tree-grouped ancestors]
+    (let [[d-key & D-rest] D]
+      (reduce-kv
+        ;; A estrutura de dados dos agrupamento (tree-grouped) é:
+        ;; key é o valor da dimensão (não a keyword);
+        ;; valor é sempre um vector onde o primeiro elemento
+        ;; é o sumário, um map, e o segundo, opcional, é children.
+        (fn [rows d-val [summary children]]
+          (let [leaf? (empty? children)
 
-   [:operator_name "Paulinho"]
-   [{:operator_name "Paulinho"
-     :hours 25}]}
+                ancestors' (merge ancestors {d-key d-val})
 
+                rows' (conj rows (merge {:d d-key
+                                         :is_leaf leaf?}
+                                        ancestors'
+                                        summary))]
+            (if leaf?
+              rows'
+              (into rows' (tree-grouped-rows D-rest children ancestors')))))
+        []
+        tree-grouped)))
 
-  ;; ---
+  (tree-grouped-rows
+    [:operator_name :operation_name]
+    {"Carlinhos"
+     [{:hours 22}
+      {"Adubação"
+       [{:hours 15}]
 
-  {[:operator_name "Carlinhos"]
-   [{:operator_name "Carlinhos"
-     :hours 30}
+       "Pulverização"
+       [{:hours 7}]}]
 
-    {[:date "2021-03-05"]
-     [{:operator_name "Carlinhos"
-       :date "2021-03-05"
-       :hours 20}]
+     "Paulinho"
+     [{:hours 3}
+      {"Pulverização"
+       [{:hours 3}]}]}
+    {})
 
-     [:date "2021-03-04"]
-     [{:operator_name "Carlinhos"
-       :date "2021-03-04"
-       :hours 25}]}]}
-
-  ;; ---
-
-
-  {[:operator_name "Carlinhos"]
-   [{:operator_name "Carlinhos"
-     :hours 30}
-
-    {[:date "2021-03-05"]
-     [{:operator_name "Carlinhos"
-       :date "2021-03-05"
-       :hours 20}
-
-      {[:operation_name "Adubação"]
-       [{:operator_name "Carlinhos"
-         :date "2021-03-05"
-         :operation_name "Adubação"
-         :hours 15}]
-
-       [:operation_name "Pulverização"]
-       [{:operator_name "Carlinhos"
-         :date "2021-03-05"
-         :operation_name "Pulverização"
-         :hours 5}]}]}]}
 
   )
