@@ -8,6 +8,34 @@
 
 (deftest aggregate-test
   (testing "Sum"
+    (is (= {}
+           (data90/aggregate
+             nil
+             nil)))
+
+    (is (= {}
+           (data90/aggregate
+             nil
+             [])))
+
+    (is (= {}
+           (data90/aggregate
+             nil
+             [{:x 3 :y 2}])))
+
+    (is (= {:sum-x 3
+            :sum-y 2}
+           (data90/aggregate
+             [[:sum-x :x :sum]
+              [:sum-y :y :sum]]
+             [{:x 3 :y 2}])))
+
+    (is (= {}
+           (data90/aggregate
+             nil
+             [{:x 3 :y 2}
+              {:x 2 :y 3}])))
+
     (let [rows [{:x 3 :y 2}
                 {:x 2 :y 3}]]
       (is (= {:sum-x 5 :sum-y 5}
