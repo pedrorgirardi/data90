@@ -63,7 +63,32 @@
       (is (= {:total 0}
              (data90/aggregate
                [[:total :hours :sum]]
-               rows))))))
+               rows)))))
+
+  (testing "Max"
+    (is (= {:max-x 3}
+           (data90/aggregate
+             [[:max-x :x :max]]
+             [{:x 1}
+              {:x 2}
+              {:x 3}]))))
+
+  (testing "Max"
+    (is (= {:count 3}
+           (data90/aggregate
+             [[:count :x :count]]
+             [{}
+              {}
+              {}]))))
+
+  (testing "User defined"
+    (is (= {:count 3}
+           (data90/aggregate
+             [[:count :x (fn [rows]
+                           (count rows))]]
+             [{}
+              {}
+              {}])))))
 
 (deftest tree-group-test
   (let [dataset [{:operation_code "P1"

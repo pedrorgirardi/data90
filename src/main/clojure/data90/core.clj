@@ -1,31 +1,53 @@
 (ns data90.core)
 
-(defn aggregate [formula dataset]
+(defn aggregate [formula rows]
   (reduce
     (fn [M row]
-      (->> formula
-           (map
-             (fn [[k v a]]
-               [k (case a
-                    :sum
-                    (+ (or (get M k) 0)
-                       (or (v row) 0))
+      (let [sum-min-max #{:sum :min :max}
 
-                    nil)]))
-           (into {})))
+            formula-sum-min-max (filter
+                                  (fn [[_ _ a]]
+                                    (sum-min-max a))
+                                  formula)
+
+            formula-reduce (remove
+                             (fn [[_ _ a]]
+                               (sum-min-max a))
+                             formula)
+
+            ag-fn {:sum +
+                   :min min
+                   :max max
+                   :count count}
+
+            ag-sum-min-max (->> formula-sum-min-max
+                                (map
+                                  (fn [[k v a]]
+                                    (let [v-previous (or (get M k) 0)
+                                          v-current (or (v row) 0)]
+                                      [k ((ag-fn a) v-previous v-current)])))
+                                (into {}))
+
+            ag-reduce (reduce
+                        (fn [m [k _ a]]
+                          (assoc m k ((or (ag-fn a) a) rows)))
+                        {}
+                        formula-reduce)]
+
+        (merge ag-sum-min-max ag-reduce)))
     {}
-    dataset))
+    rows))
 
 (defn tree-group [D formula dataset]
   (let [[d & D-rest] D]
     (with-meta
       (->> (group-by d dataset)
            (reduce-kv
-             (fn [m k k-dataset]
-               (let [summary (aggregate formula k-dataset)
+             (fn [m k rows]
+               (let [summary (aggregate formula rows)
 
                      children (when (seq D-rest)
-                                (tree-group D-rest formula k-dataset))]
+                                (tree-group D-rest formula rows))]
                  (assoc m k (if children
                               [summary children]
                               [summary]))))
@@ -42,5 +64,5 @@
                     [k k a])
                   formula)
 
-        dataset (map first (vals tree-grouped))]
-    (aggregate formula dataset)))
+        rows (map first (vals tree-grouped))]
+    (aggregate formula rows)))
