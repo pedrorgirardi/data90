@@ -1,26 +1,32 @@
 (ns data90.core)
 
 (defn aggregate [formula rows]
-  (reduce
-    (fn [M row]
-      (let [sum-min-max #{:sum :min :max}
+  (let [sum-min-max #{:sum :min :max}
 
-            formula-sum-min-max (filter
-                                  (fn [[_ _ a]]
-                                    (sum-min-max a))
-                                  formula)
+        formula-sum-min-max (filter
+                              (fn [[_ _ a]]
+                                (sum-min-max a))
+                              formula)
 
-            formula-reduce (remove
-                             (fn [[_ _ a]]
-                               (sum-min-max a))
-                             formula)
+        formula-reduce (remove
+                         (fn [[_ _ a]]
+                           (sum-min-max a))
+                         formula)
 
-            ag-fn {:sum +
-                   :min min
-                   :max max
-                   :count count}
+        ag-fn {:sum +
+               :min min
+               :max max
+               :count count}
 
-            ag-sum-min-max (->> formula-sum-min-max
+        ag-reduce (reduce
+                    (fn [m [k _ a]]
+                      (assoc m k ((or (ag-fn a) a) rows)))
+                    {}
+                    formula-reduce)
+
+        ag-sum-min-max (reduce
+                         (fn [M row]
+                           (->> formula-sum-min-max
                                 (map
                                   (fn [[k v a]]
                                     (cond
@@ -31,17 +37,10 @@
 
                                       (= :sum a)
                                       [k (+ (or (get M k) 0) (or (v row) 0))])))
-                                (into {}))
-
-            ag-reduce (reduce
-                        (fn [m [k _ a]]
-                          (assoc m k ((or (ag-fn a) a) rows)))
-                        {}
-                        formula-reduce)]
-
-        (merge ag-sum-min-max ag-reduce)))
-    {}
-    rows))
+                                (into {})))
+                         {}
+                         rows)]
+    (merge ag-reduce ag-sum-min-max)))
 
 (defn tree-group [D formula dataset]
   (let [[d & D-rest] D]
