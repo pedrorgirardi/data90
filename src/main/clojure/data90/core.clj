@@ -23,9 +23,14 @@
             ag-sum-min-max (->> formula-sum-min-max
                                 (map
                                   (fn [[k v a]]
-                                    (let [v-previous (or (get M k) 0)
-                                          v-current (or (v row) 0)]
-                                      [k ((ag-fn a) v-previous v-current)])))
+                                    (cond
+                                      (#{:min :max} a)
+                                      (let [v0 (or (get M k) (v row))
+                                            v1 (v row)]
+                                        [k (some-> v0 ((ag-fn a) (or v1 v0)))])
+
+                                      (= :sum a)
+                                      [k (+ (or (get M k) 0) (or (v row) 0))])))
                                 (into {}))
 
             ag-reduce (reduce

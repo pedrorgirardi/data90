@@ -65,15 +65,25 @@
                [[:total :hours :sum]]
                rows)))))
 
+  (testing "Min"
+    (is (= {:min-x -1}
+           (data90/aggregate
+             [[:min-x :x :min]]
+             [{:x 1}
+              {:x nil}
+              {:x -1}]))))
+
   (testing "Max"
     (is (= {:max-x 3}
            (data90/aggregate
              [[:max-x :x :max]]
              [{:x 1}
               {:x 2}
-              {:x 3}]))))
+              {:x nil}
+              {:x 3}
+              {:x -10}]))))
 
-  (testing "Max"
+  (testing "Count"
     (is (= {:count 3}
            (data90/aggregate
              [[:count :x :count]]
@@ -88,7 +98,33 @@
                            (count rows))]]
              [{}
               {}
-              {}])))))
+              {}])))
+
+    (is (= {:min 1}
+           (data90/aggregate
+             [[:min :x (fn [rows]
+                         (->> rows
+                              (map :x)
+                              (reduce min)))]]
+             [{:x 1}
+              {:x 2}
+              {:x 3}]))))
+
+  (testing "All combined"
+    (is (= {:count 3
+            :max 3
+            :min 1
+            :sum 6
+            :user-count 3}
+           (data90/aggregate
+             [[:sum :x :sum]
+              [:min :x :min]
+              [:max :x :max]
+              [:count :x :count]
+              [:user-count :x count]]
+             [{:x 1}
+              {:x 2}
+              {:x 3}])))))
 
 (deftest tree-group-test
   (let [dataset [{:operation_code "P1"
