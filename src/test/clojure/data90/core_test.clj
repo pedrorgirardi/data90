@@ -330,4 +330,16 @@
            (data90/tree-group
              [:operation_name]
              [[:hours-sum :timestamp_delta_as_hour :sum]]
-             dataset1)))))
+             dataset1))))
+
+  (is (= {:min 1}
+         (data90/summary
+           [[:min nil :min]]
+           {"Foo" [{:min 1}]
+            "Bar" [{:min 2}]})))
+
+  (is (= {:max 2}
+         (data90/summary
+           [[:max nil :max]]
+           {"Foo" [{:max 1}]
+            "Bar" [{:max 2}]}))))

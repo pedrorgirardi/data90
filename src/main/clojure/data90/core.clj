@@ -58,15 +58,17 @@
              {}))
       {:formula formula})))
 
-(defn summary [tree-grouped]
-  (let [{:keys [formula]} (meta tree-grouped)
+(defn summary
+  ([tree-grouped]
+   (let [{:keys [formula]} (meta tree-grouped)]
+     (summary formula tree-grouped)))
+  ([formula tree-grouped]
+   (let [;; Adjust formula since tree-grouped
+         ;; already had its keys mapped.
+         formula (map
+                   (fn [[k _ a]]
+                     [k k a])
+                   formula)
 
-        ;; Adjust formula since tree-grouped
-        ;; already had its keys mapped.
-        formula (map
-                  (fn [[k _ a]]
-                    [k k a])
-                  formula)
-
-        rows (map first (vals tree-grouped))]
-    (aggregate formula rows)))
+         rows (map first (vals tree-grouped))]
+     (aggregate formula rows))))
