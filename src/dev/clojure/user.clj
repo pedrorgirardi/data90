@@ -122,10 +122,6 @@
                        [(first d)]
                        [d])]
        (reduce
-         ;; A estrutura de dados dos árvore é:
-         ;; key é o valor da dimensão (não a keyword);
-         ;; valor é sempre um vector onde o primeiro elemento
-         ;; é o sumário, um map, e o segundo, opcional, é children.
          (fn [rows [d-val [summary branches]]]
            (let [leaf? (empty? branches)
 
@@ -141,19 +137,9 @@
          []
          tree))))
 
-  (tree-ungroup
-    [:operator_name :operation_name]
-    {"Carlinhos"
-     [{:hours 22}
-      {"Adubação"
-       [{:hours 15}]
-
-       "Pulverização"
-       [{:hours 7}]}]
-
-     "Paulinho"
-     [{:hours 3}
-      {"Pulverização"
-       [{:hours 3}]}]})
+  (let [D [:operator_name :operation_name]]
+    (->> dataset
+         (data90/tree D [[:hours-sum :hours :sum]])
+         (tree-ungroup D)))
 
   )
