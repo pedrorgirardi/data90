@@ -42,33 +42,55 @@
                          rows)]
     (merge ag-reduce ag-sum-min-max)))
 
-(defn tree-group [D formula dataset]
-  (let [[d & D-rest] D]
-    (with-meta
-      (->> (group-by d dataset)
-           (reduce-kv
-             (fn [m k rows]
-               (let [summary (aggregate formula rows)
+(defn tree
+  "A tree grouped, aggregated and sorted.
 
-                     children (when (seq D-rest)
-                                (tree-group D-rest formula rows))]
-                 (assoc m k (if children
-                              [summary children]
-                              [summary]))))
-             {}))
-      {:formula formula})))
+   D describes how to group and sort, and formula how to aggregate.
 
-(defn summary
-  ([tree-grouped]
-   (let [{:keys [formula]} (meta tree-grouped)]
-     (summary formula tree-grouped)))
-  ([formula tree-grouped]
-   (let [;; Adjust formula since tree-grouped
-         ;; already had its keys mapped.
+   D is a vector of 'branch function', or a vector of
+   'branch function' and 'branch comparator' pairs."
+  [D formula dataset]
+  (let [[d & D-rest] D
+
+        [d-group-by d-comparator] (if (vector? d)
+                                    [(first d) (second d)]
+                                    [d])
+
+        grouped (group-by d-group-by dataset)
+
+        aggregated (reduce-kv
+                     (fn [acc k rows]
+                       (let [summary (aggregate formula rows)
+
+                             branches (when (seq D-rest)
+                                        (tree D-rest formula rows))]
+                         (conj acc [k (if branches
+                                        [summary branches]
+                                        [summary])])))
+                     []
+                     grouped)
+
+        sorted (if d-comparator
+                 (sort-by first d-comparator aggregated)
+                 (sort-by first aggregated))
+        sorted (vec sorted)]
+
+    (with-meta sorted {:formula formula})))
+
+(defn tree-summary
+  ([tree]
+   (let [{:keys [formula]} (meta tree)]
+     (tree-summary formula tree)))
+  ([formula tree]
+   (let [;; Replace source key function with aggregated key.
          formula (map
                    (fn [[k _ a]]
                      [k k a])
                    formula)
 
-         rows (map first (vals tree-grouped))]
+         ;; Extract summary of top branches - branch is a vector e.g.: [k [summary branches]].
+         rows (map
+                (fn [[_ [summary]]]
+                  summary)
+                tree)]
      (aggregate formula rows))))

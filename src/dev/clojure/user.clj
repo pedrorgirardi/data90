@@ -104,7 +104,7 @@
         {:x 5 :y 10}]))
 
 
-  (data90/tree-group
+  (data90/tree
     [:operator_name]
     [[:hours-sum :hours :sum]]
     dataset)
@@ -112,29 +112,36 @@
   (keys *1)
 
 
-  (defn tree-grouped-rows [D tree-grouped ancestors]
-    (let [[d-key & D-rest] D]
-      (reduce-kv
-        ;; A estrutura de dados dos agrupamento (tree-grouped) é:
-        ;; key é o valor da dimensão (não a keyword);
-        ;; valor é sempre um vector onde o primeiro elemento
-        ;; é o sumário, um map, e o segundo, opcional, é children.
-        (fn [rows d-val [summary children]]
-          (let [leaf? (empty? children)
+  (defn tree-ungroup
+    ([D tree]
+     (tree-ungroup D tree {}))
+    ([D tree ancestors]
+     (let [[d & D-rest] D
 
-                ancestors' (merge ancestors {d-key d-val})
+           [d-key _] (if (vector? d)
+                       [(first d)]
+                       [d])]
+       (reduce
+         ;; A estrutura de dados dos árvore é:
+         ;; key é o valor da dimensão (não a keyword);
+         ;; valor é sempre um vector onde o primeiro elemento
+         ;; é o sumário, um map, e o segundo, opcional, é children.
+         (fn [rows [d-val [summary branches]]]
+           (let [leaf? (empty? branches)
 
-                rows' (conj rows (merge {:d d-key
-                                         :is_leaf leaf?}
-                                        ancestors'
-                                        summary))]
-            (if leaf?
-              rows'
-              (into rows' (tree-grouped-rows D-rest children ancestors')))))
-        []
-        tree-grouped)))
+                 ancestors' (merge ancestors {d-key d-val})
 
-  (tree-grouped-rows
+                 rows' (conj rows (merge {:d d-key
+                                          :is_leaf leaf?}
+                                         ancestors'
+                                         summary))]
+             (if leaf?
+               rows'
+               (into rows' (tree-ungroup D-rest branches ancestors')))))
+         []
+         tree))))
+
+  (tree-ungroup
     [:operator_name :operation_name]
     {"Carlinhos"
      [{:hours 22}
@@ -147,8 +154,6 @@
      "Paulinho"
      [{:hours 3}
       {"Pulverização"
-       [{:hours 3}]}]}
-    {})
-
+       [{:hours 3}]}]})
 
   )
