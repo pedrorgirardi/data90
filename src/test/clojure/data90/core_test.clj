@@ -548,37 +548,3 @@
                           :aggregate-by :timestamp_delta_as_hour
                           :aggregate-with :sum}]
                dataset1))))))
-
-(deftest tree-summary-test
-  (is (= {:x-sum 10}
-         (data90/tree-summary
-           (data90/tree
-             [#:data90 {:group-by :operation_name}]
-             [#:data90 {:name :x-sum
-                        :aggregate-by :x
-                        :aggregate-with :sum}]
-             [{:a "Doing A" :x 3}
-              {:a "Doing B" :x 7}]))))
-
-  (is (= {:hours-sum 72.0}
-         (data90/tree-summary
-           (data90/tree
-             [#:data90 {:group-by :operation_name}]
-             [#:data90 {:name :hours-sum
-                        :aggregate-by :timestamp_delta_as_hour
-                        :aggregate-with :sum}]
-             dataset1))))
-
-  (is (= {:min 1}
-         (data90/tree-summary
-           [#:data90 {:name :min
-                      :aggregate-with :min}]
-           {"Foo" [{:min 1}]
-            "Bar" [{:min 2}]})))
-
-  (is (= {:max 2}
-         (data90/tree-summary
-           [#:data90 {:name :max
-                      :aggregate-with :max}]
-           {"Foo" [{:max 1}]
-            "Bar" [{:max 2}]}))))

@@ -80,20 +80,3 @@
 
     (with-meta sorted {:d d :M M})))
 
-(defn tree-summary
-  ([tree]
-   (let [{:keys [M]} (meta tree)]
-     (tree-summary M tree)))
-  ([M tree]
-   (let [;; Replace source key function with aggregated key.
-         M' (map
-              (fn [{aggregate-name :data90/name :as m}]
-                (merge m #:data90 {:aggregate-by aggregate-name}))
-              M)
-
-         ;; Extract summary of top branches - branch is a vector e.g.: [k [summary branches]].
-         rows (map
-                (fn [[_ [summary]]]
-                  summary)
-                tree)]
-     (aggregate M' rows))))
