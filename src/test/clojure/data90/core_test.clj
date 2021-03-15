@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [clojure.java.io :as io]
 
-            [data90.core :as data90]))
+            [data90.core :as data90])
+  (:import (java.time LocalDate)))
 
 (def dataset1 (read-string (slurp (io/resource "dataset1.edn"))))
 
@@ -157,7 +158,7 @@
                [{:sum 1}]]]
 
              (data90/tree
-               [:a]
+               [#:data90 {:group-by :a}]
                [[:sum :x :sum]]
                [{:a 1 :x 1}
                 {:a 2 :x 1}
@@ -171,11 +172,53 @@
                [{:sum 1}]]]
 
              (data90/tree
-               [[:a #(compare %2 %1)]]
+               [#:data90 {:group-by :a
+                          :sort-by
+                          (fn [_]
+                            (fn [x1 x2]
+                              (compare x2 x1)))}]
                [[:sum :x :sum]]
                [{:a 1 :x 1}
                 {:a 2 :x 1}
                 {:a 3 :x 1}])))
+
+      (is (= [["2021-01-01"
+               [{:sum 1}]]
+              ["2021-01-02"
+               [{:sum 1}]]
+              ["2021-01-03"
+               [{:sum 1}]]]
+
+             (data90/tree
+               [#:data90 {:name :a
+                          :group-by :a
+                          :sort-by
+                          (fn [_]
+                            (fn [x1 x2]
+                              (compare (LocalDate/parse x1) (LocalDate/parse x2))))}]
+               [[:sum :x :sum]]
+               [{:a "2021-01-01" :x 1}
+                {:a "2021-01-02" :x 1}
+                {:a "2021-01-03" :x 1}])))
+
+      (is (= [["2021-01-03"
+               [{:sum 1}]]
+              ["2021-01-02"
+               [{:sum 1}]]
+              ["2021-01-01"
+               [{:sum 1}]]]
+
+             (data90/tree
+               [#:data90 {:name "a"
+                          :group-by :a
+                          :sort-by
+                          (fn [_]
+                            (fn [x1 x2]
+                              (compare (LocalDate/parse x2) (LocalDate/parse x1))))}]
+               [[:sum :x :sum]]
+               [{:a "2021-01-01" :x 1}
+                {:a "2021-01-02" :x 1}
+                {:a "2021-01-03" :x 1}])))
 
       (is (= [[1
                [{:sum 3}
@@ -194,7 +237,17 @@
 
              (data90/tree
                ;; :a is asc; :b is desc.
-               [[:a #(compare %1 %2)] [:b #(compare %2 %1)]]
+               [#:data90 {:group-by :a
+                          :sort-by
+                          (fn [_]
+                            (fn [x1 x2]
+                              (compare x1 x2)))}
+
+                #:data90 {:group-by :b
+                          :sort-by
+                          (fn [_]
+                            (fn [x1 x2]
+                              (compare x2 x1)))}]
                [[:sum :x :sum]]
                [{:a 1 :b "A" :x 1}
                 {:a 1 :b "B" :x 1}
@@ -209,7 +262,7 @@
              [{:sum 10}]]]
 
            (data90/tree
-             [:operation_name]
+             [#:data90 {:group-by :operation_name}]
              [[:sum :hours :sum]]
              dataset)))
 
@@ -220,7 +273,7 @@
              [{:sum 3}]]]
 
            (data90/tree
-             [:operator_name]
+             [#:data90 {:group-by :operator_name}]
              [[:sum :hours :sum]]
              dataset)))
 
@@ -230,7 +283,7 @@
              [{:sum 22}]]]
 
            (data90/tree
-             [(juxt :operator_code :operator_name)]
+             [#:data90 {:group-by (juxt :operator_code :operator_name)}]
              [[:sum :hours :sum]]
              dataset)))
 
@@ -246,7 +299,8 @@
                 [{:hours 3}]]]]]]
 
            (data90/tree
-             [:operator_name :operation_name]
+             [#:data90 {:group-by :operator_name}
+              #:data90 {:group-by :operation_name}]
              [[:hours :hours :sum]]
              dataset)))
 
@@ -268,19 +322,30 @@
                    [{:hours 3}]]]]]]]]]
 
            (data90/tree
-             [:operator_name :date :operation_name]
+             [#:data90 {:group-by :operator_name}
+              #:data90 {:group-by :date}
+              #:data90 {:group-by :operation_name}]
              [[:hours :hours :sum]]
              dataset)))
 
     (testing "Nil dataset"
-      (is (= [] (data90/tree [:x] [[:x :x :sum]] nil)))
+      (is (= [] (data90/tree
+                  [#:data90 {:group-by :x}]
+                  [[:x :x :sum]]
+                  nil)))
       (is (= [] (data90/tree nil nil nil))))
 
     (testing "Empty dataset"
-      (is (= [] (data90/tree [:x] [[:x :x :sum]] []))))
+      (is (= [] (data90/tree
+                  [#:data90 {:group-by :x}]
+                  [[:x :x :sum]]
+                  []))))
 
     (testing "Metadata"
-      (is (= {:formula [[:x :x :sum]]} (meta (data90/tree [:x] [[:x :x :sum]] [])))))
+      (is (= {:formula [[:x :x :sum]]} (meta (data90/tree
+                                               [#:data90 {:group-by :x}]
+                                               [[:x :x :sum]]
+                                               [])))))
 
     (testing "Dataset 1"
       (is (= [["Chapadão do Sul"
@@ -400,7 +465,11 @@
                           ["Fim de Turno"
                            [{:hours 4.364123888888889}]]]]]]]]]]]]]]]
              (data90/tree
-               [:site_name :shift_name :operator_name :context_date :operation_name]
+               [#:data90 {:group-by :site_name}
+                #:data90 {:group-by :shift_name}
+                #:data90 {:group-by :operator_name}
+                #:data90 {:group-by :context_date}
+                #:data90 {:group-by :operation_name}]
                [[:hours :timestamp_delta_as_hour :sum]]
                dataset1))))))
 
@@ -408,7 +477,7 @@
   (is (= {:x-sum 10}
          (data90/tree-summary
            (data90/tree
-             [:operation_name]
+             [#:data90 {:group-by :operation_name}]
              [[:x-sum :x :sum]]
              [{:a "Doing A" :x 3}
               {:a "Doing B" :x 7}]))))
@@ -416,7 +485,7 @@
   (is (= {:hours-sum 72.0}
          (data90/tree-summary
            (data90/tree
-             [:operation_name]
+             [#:data90 {:group-by :operation_name}]
              [[:hours-sum :timestamp_delta_as_hour :sum]]
              dataset1))))
 

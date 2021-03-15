@@ -36,7 +36,7 @@
         {:x 5 :y 10}]))
 
   (data90/tree
-    [:operator_name]
+    [#:data90 {:group-by :operator_name}]
     [[:hours-sum :hours :sum]]
     dataset)
 
@@ -65,7 +65,8 @@
          []
          tree))))
 
-  (let [D [:operator_name :operation_name]]
+  (let [D [#:data90 {:group-by :operator_name}
+           #:data90 {:group-by :operation_name}]]
     (->> dataset
          (data90/tree D [[:hours-sum :hours :sum]])
          (tree-ungroup D)))

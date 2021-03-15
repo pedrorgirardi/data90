@@ -52,9 +52,9 @@
   [D formula dataset]
   (let [[d & D-rest] D
 
-        [d-group-by d-comparator] (if (vector? d)
-                                    [(first d) (second d)]
-                                    [d])
+        {d-name :data90/name
+         d-group-by :data90/group-by
+         d-sort-by :data90/sort-by} d
 
         grouped (group-by d-group-by dataset)
 
@@ -70,8 +70,8 @@
                      []
                      grouped)
 
-        sorted (if d-comparator
-                 (sort-by first d-comparator aggregated)
+        sorted (if d-sort-by
+                 (sort-by first (d-sort-by d-name) aggregated)
                  (sort-by first aggregated))
         sorted (vec sorted)]
 
