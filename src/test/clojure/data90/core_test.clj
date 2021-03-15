@@ -220,9 +220,8 @@
              (data90/tree
                [#:data90 {:group-by :a
                           :sort-by
-                          (fn [_]
-                            (fn [x1 x2]
-                              (compare x2 x1)))}]
+                          (fn [x1 x2]
+                            (compare x2 x1))}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
@@ -241,9 +240,8 @@
                [#:data90 {:name :a
                           :group-by :a
                           :sort-by
-                          (fn [_]
-                            (fn [x1 x2]
-                              (compare (LocalDate/parse x1) (LocalDate/parse x2))))}]
+                          (fn [x1 x2]
+                            (compare (LocalDate/parse x1) (LocalDate/parse x2)))}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
@@ -262,9 +260,8 @@
                [#:data90 {:name "a"
                           :group-by :a
                           :sort-by
-                          (fn [_]
-                            (fn [x1 x2]
-                              (compare (LocalDate/parse x2) (LocalDate/parse x1))))}]
+                          (fn [x1 x2]
+                            (compare (LocalDate/parse x2) (LocalDate/parse x1)))}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
@@ -291,15 +288,13 @@
                ;; :a is asc; :b is desc.
                [#:data90 {:group-by :a
                           :sort-by
-                          (fn [_]
-                            (fn [x1 x2]
-                              (compare x1 x2)))}
+                          (fn [x1 x2]
+                            (compare x1 x2))}
 
                 #:data90 {:group-by :b
                           :sort-by
-                          (fn [_]
-                            (fn [x1 x2]
-                              (compare x2 x1)))}]
+                          (fn [x1 x2]
+                            (compare x2 x1))}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
