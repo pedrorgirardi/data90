@@ -1,17 +1,17 @@
 (ns data90.core)
 
-(defn aggregate [formula rows]
+(defn aggregate [M rows]
   (let [sum-min-max #{:sum :min :max}
 
         formula-sum-min-max (filter
-                              (fn [[_ _ a]]
-                                (sum-min-max a))
-                              formula)
+                              (fn [{:data90/keys [aggregate-with]}]
+                                (sum-min-max aggregate-with))
+                              M)
 
         formula-reduce (remove
-                         (fn [[_ _ a]]
-                           (sum-min-max a))
-                         formula)
+                         (fn [{:data90/keys [aggregate-with]}]
+                           (sum-min-max aggregate-with))
+                         M)
 
         ag-fn {:sum +
                :min min
@@ -19,8 +19,9 @@
                :count count}
 
         ag-reduce (reduce
-                    (fn [m [k _ a]]
-                      (assoc m k ((or (ag-fn a) a) rows)))
+                    (fn [m {aggregate-name :data90/name
+                            aggregate-with :data90/aggregate-with}]
+                      (assoc m aggregate-name ((or (ag-fn aggregate-with) aggregate-with) rows)))
                     {}
                     formula-reduce)
 
@@ -28,15 +29,17 @@
                          (fn [M row]
                            (->> formula-sum-min-max
                                 (map
-                                  (fn [[k v a]]
+                                  (fn [{aggregate-name :data90/name
+                                        aggregate-by :data90/aggregate-by
+                                        aggregate-with :data90/aggregate-with}]
                                     (cond
-                                      (#{:min :max} a)
-                                      (let [v0 (or (get M k) (v row))
-                                            v1 (v row)]
-                                        [k (some-> v0 ((ag-fn a) (or v1 v0)))])
+                                      (#{:min :max} aggregate-with)
+                                      (let [v0 (or (get M aggregate-name) (aggregate-by row))
+                                            v1 (aggregate-by row)]
+                                        [aggregate-name (some-> v0 ((ag-fn aggregate-with) (or v1 v0)))])
 
-                                      (= :sum a)
-                                      [k (+ (or (get M k) 0) (or (v row) 0))])))
+                                      (= :sum aggregate-with)
+                                      [aggregate-name (+ (or (get M aggregate-name) 0) (or (aggregate-by row) 0))])))
                                 (into {})))
                          {}
                          rows)]
@@ -49,7 +52,7 @@
 
    D is a vector of 'branch function', or a vector of
    'branch function' and 'branch comparator' pairs."
-  [D formula dataset]
+  [D M dataset]
   (let [[d & D-rest] D
 
         {d-name :data90/name
@@ -60,10 +63,10 @@
 
         aggregated (reduce-kv
                      (fn [acc k rows]
-                       (let [summary (aggregate formula rows)
+                       (let [summary (aggregate M rows)
 
                              branches (when (seq D-rest)
-                                        (tree D-rest formula rows))]
+                                        (tree D-rest M rows))]
                          (conj acc [k (if branches
                                         [summary branches]
                                         [summary])])))
@@ -75,22 +78,22 @@
                  (sort-by first aggregated))
         sorted (vec sorted)]
 
-    (with-meta sorted {:formula formula})))
+    (with-meta sorted {:d d :M M})))
 
 (defn tree-summary
   ([tree]
-   (let [{:keys [formula]} (meta tree)]
-     (tree-summary formula tree)))
-  ([formula tree]
+   (let [{:keys [M]} (meta tree)]
+     (tree-summary M tree)))
+  ([M tree]
    (let [;; Replace source key function with aggregated key.
-         formula (map
-                   (fn [[k _ a]]
-                     [k k a])
-                   formula)
+         M' (map
+              (fn [{aggregate-name :data90/name :as m}]
+                (merge m #:data90 {:aggregate-by aggregate-name}))
+              M)
 
          ;; Extract summary of top branches - branch is a vector e.g.: [k [summary branches]].
          rows (map
                 (fn [[_ [summary]]]
                   summary)
                 tree)]
-     (aggregate formula rows))))
+     (aggregate M' rows))))

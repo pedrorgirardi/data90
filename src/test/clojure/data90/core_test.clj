@@ -27,8 +27,13 @@
     (is (= {:sum-x 3
             :sum-y 2}
            (data90/aggregate
-             [[:sum-x :x :sum]
-              [:sum-y :y :sum]]
+             [#:data90 {:name :sum-x
+                        :aggregate-by :x
+                        :aggregate-with :sum}
+
+              #:data90 {:name :sum-y
+                        :aggregate-by :y
+                        :aggregate-with :sum}]
              [{:x 3 :y 2}])))
 
     (is (= {}
@@ -41,35 +46,49 @@
                 {:x 2 :y 3}]]
       (is (= {:sum-x 5 :sum-y 5}
              (data90/aggregate
-               [[:sum-x :x :sum]
-                [:sum-y :y :sum]]
+               [#:data90 {:name :sum-x
+                          :aggregate-by :x
+                          :aggregate-with :sum}
+
+                #:data90 {:name :sum-y
+                          :aggregate-by :y
+                          :aggregate-with :sum}]
                rows))))
 
     (let [rows [{:hours 3}
                 {:hours 7}]]
       (is (= {:hours 10}
              (data90/aggregate
-               [[:hours :hours :sum]]
+               [#:data90 {:name :hours
+                          :aggregate-by :hours
+                          :aggregate-with :sum}]
+
                rows))))
 
     (let [rows [{:hours 3}
                 {:hours nil}]]
       (is (= {:total 3}
              (data90/aggregate
-               [[:total :hours :sum]]
+               [#:data90 {:name :total
+                          :aggregate-by :hours
+                          :aggregate-with :sum}]
                rows))))
 
     (let [rows [{:hours nil}
                 {:hours nil}]]
       (is (= {:total 0}
              (data90/aggregate
-               [[:total :hours :sum]]
+               [#:data90 {:name :total
+                          :aggregate-by :hours
+                          :aggregate-with :sum}]
                rows)))))
 
   (testing "Min"
     (is (= {:min-x -1}
            (data90/aggregate
-             [[:min-x :x :min]]
+             [#:data90 {:name :min-x
+                        :aggregate-by :x
+                        :aggregate-with :min}]
              [{:x 1}
               {:x nil}
               {:x -1}]))))
@@ -77,7 +96,9 @@
   (testing "Max"
     (is (= {:max-x 3}
            (data90/aggregate
-             [[:max-x :x :max]]
+             [#:data90 {:name :max-x
+                        :aggregate-by :x
+                        :aggregate-with :max}]
              [{:x 1}
               {:x 2}
               {:x nil}
@@ -87,7 +108,9 @@
   (testing "Count"
     (is (= {:count 3}
            (data90/aggregate
-             [[:count :x :count]]
+             [#:data90 {:name :count
+                        :aggregate-by :x
+                        :aggregate-with :count}]
              [{}
               {}
               {}]))))
@@ -95,18 +118,23 @@
   (testing "User defined"
     (is (= {:count 3}
            (data90/aggregate
-             [[:count :x (fn [rows]
-                           (count rows))]]
+             [#:data90 {:name :count
+                        :aggregate-by :x
+                        :aggregate-with (fn [rows]
+                                          (count rows))}]
+
              [{}
               {}
               {}])))
 
     (is (= {:min 1}
            (data90/aggregate
-             [[:min :x (fn [rows]
-                         (->> rows
-                              (map :x)
-                              (reduce min)))]]
+             [#:data90 {:name :min
+                        :aggregate-by :x
+                        :aggregate-with (fn [rows]
+                                          (->> rows
+                                               (map :x)
+                                               (reduce min)))}]
              [{:x 1}
               {:x 2}
               {:x 3}]))))
@@ -118,11 +146,27 @@
             :sum 6
             :user-count 3}
            (data90/aggregate
-             [[:sum :x :sum]
-              [:min :x :min]
-              [:max :x :max]
-              [:count :x :count]
-              [:user-count :x count]]
+             [#:data90 {:name :sum
+                        :aggregate-by :x
+                        :aggregate-with :sum}
+
+              #:data90 {:name :min
+                        :aggregate-by :x
+                        :aggregate-with :min}
+
+
+              #:data90 {:name :max
+                        :aggregate-by :x
+                        :aggregate-with :max}
+
+
+              #:data90 {:name :count
+                        :aggregate-by :x
+                        :aggregate-with :count}
+
+              #:data90 {:name :user-count
+                        :aggregate-by :x
+                        :aggregate-with count}]
              [{:x 1}
               {:x 2}
               {:x 3}])))))
@@ -159,7 +203,9 @@
 
              (data90/tree
                [#:data90 {:group-by :a}]
-               [[:sum :x :sum]]
+               [#:data90 {:name :sum
+                          :aggregate-by :x
+                          :aggregate-with :sum}]
                [{:a 1 :x 1}
                 {:a 2 :x 1}
                 {:a 3 :x 1}])))
@@ -177,7 +223,9 @@
                           (fn [_]
                             (fn [x1 x2]
                               (compare x2 x1)))}]
-               [[:sum :x :sum]]
+               [#:data90 {:name :sum
+                          :aggregate-by :x
+                          :aggregate-with :sum}]
                [{:a 1 :x 1}
                 {:a 2 :x 1}
                 {:a 3 :x 1}])))
@@ -196,7 +244,9 @@
                           (fn [_]
                             (fn [x1 x2]
                               (compare (LocalDate/parse x1) (LocalDate/parse x2))))}]
-               [[:sum :x :sum]]
+               [#:data90 {:name :sum
+                          :aggregate-by :x
+                          :aggregate-with :sum}]
                [{:a "2021-01-01" :x 1}
                 {:a "2021-01-02" :x 1}
                 {:a "2021-01-03" :x 1}])))
@@ -215,7 +265,9 @@
                           (fn [_]
                             (fn [x1 x2]
                               (compare (LocalDate/parse x2) (LocalDate/parse x1))))}]
-               [[:sum :x :sum]]
+               [#:data90 {:name :sum
+                          :aggregate-by :x
+                          :aggregate-with :sum}]
                [{:a "2021-01-01" :x 1}
                 {:a "2021-01-02" :x 1}
                 {:a "2021-01-03" :x 1}])))
@@ -248,7 +300,9 @@
                           (fn [_]
                             (fn [x1 x2]
                               (compare x2 x1)))}]
-               [[:sum :x :sum]]
+               [#:data90 {:name :sum
+                          :aggregate-by :x
+                          :aggregate-with :sum}]
                [{:a 1 :b "A" :x 1}
                 {:a 1 :b "B" :x 1}
                 {:a 1 :b "C" :x 1}
@@ -263,7 +317,9 @@
 
            (data90/tree
              [#:data90 {:group-by :operation_name}]
-             [[:sum :hours :sum]]
+             [#:data90 {:name :sum
+                        :aggregate-by :hours
+                        :aggregate-with :sum}]
              dataset)))
 
     (is (= [["Carlinhos"
@@ -274,7 +330,9 @@
 
            (data90/tree
              [#:data90 {:group-by :operator_name}]
-             [[:sum :hours :sum]]
+             [#:data90 {:name :sum
+                        :aggregate-by :hours
+                        :aggregate-with :sum}]
              dataset)))
 
     (is (= [[["O1" "Paulinho"]
@@ -284,7 +342,9 @@
 
            (data90/tree
              [#:data90 {:group-by (juxt :operator_code :operator_name)}]
-             [[:sum :hours :sum]]
+             [#:data90 {:name :sum
+                        :aggregate-by :hours
+                        :aggregate-with :sum}]
              dataset)))
 
     (is (= [["Carlinhos"
@@ -301,7 +361,9 @@
            (data90/tree
              [#:data90 {:group-by :operator_name}
               #:data90 {:group-by :operation_name}]
-             [[:hours :hours :sum]]
+             [#:data90 {:name :hours
+                        :aggregate-by :hours
+                        :aggregate-with :sum}]
              dataset)))
 
     (is (= [["Carlinhos"
@@ -325,27 +387,39 @@
              [#:data90 {:group-by :operator_name}
               #:data90 {:group-by :date}
               #:data90 {:group-by :operation_name}]
-             [[:hours :hours :sum]]
+             [#:data90 {:name :hours
+                        :aggregate-by :hours
+                        :aggregate-with :sum}]
              dataset)))
 
     (testing "Nil dataset"
       (is (= [] (data90/tree
                   [#:data90 {:group-by :x}]
-                  [[:x :x :sum]]
+                  [#:data90 {:name :x
+                             :aggregate-by :x
+                             :aggregate-with :sum}]
                   nil)))
       (is (= [] (data90/tree nil nil nil))))
 
     (testing "Empty dataset"
       (is (= [] (data90/tree
                   [#:data90 {:group-by :x}]
-                  [[:x :x :sum]]
+                  [#:data90 {:name :x
+                             :aggregate-by :x
+                             :aggregate-with :sum}]
                   []))))
 
     (testing "Metadata"
-      (is (= {:formula [[:x :x :sum]]} (meta (data90/tree
-                                               [#:data90 {:group-by :x}]
-                                               [[:x :x :sum]]
-                                               [])))))
+      (is (= {:d #:data90{:group-by :x}
+              :M [#:data90{:aggregate-by :x
+                           :aggregate-with :sum
+                           :name :x}]}
+             (meta (data90/tree
+                     [#:data90 {:group-by :x}]
+                     [#:data90 {:name :x
+                                :aggregate-by :x
+                                :aggregate-with :sum}]
+                     [])))))
 
     (testing "Dataset 1"
       (is (= [["Chapadão do Sul"
@@ -470,7 +544,9 @@
                 #:data90 {:group-by :operator_name}
                 #:data90 {:group-by :context_date}
                 #:data90 {:group-by :operation_name}]
-               [[:hours :timestamp_delta_as_hour :sum]]
+               [#:data90 {:name :hours
+                          :aggregate-by :timestamp_delta_as_hour
+                          :aggregate-with :sum}]
                dataset1))))))
 
 (deftest tree-summary-test
@@ -478,7 +554,9 @@
          (data90/tree-summary
            (data90/tree
              [#:data90 {:group-by :operation_name}]
-             [[:x-sum :x :sum]]
+             [#:data90 {:name :x-sum
+                        :aggregate-by :x
+                        :aggregate-with :sum}]
              [{:a "Doing A" :x 3}
               {:a "Doing B" :x 7}]))))
 
@@ -486,17 +564,21 @@
          (data90/tree-summary
            (data90/tree
              [#:data90 {:group-by :operation_name}]
-             [[:hours-sum :timestamp_delta_as_hour :sum]]
+             [#:data90 {:name :hours-sum
+                        :aggregate-by :timestamp_delta_as_hour
+                        :aggregate-with :sum}]
              dataset1))))
 
   (is (= {:min 1}
          (data90/tree-summary
-           [[:min nil :min]]
+           [#:data90 {:name :min
+                      :aggregate-with :min}]
            {"Foo" [{:min 1}]
             "Bar" [{:min 2}]})))
 
   (is (= {:max 2}
          (data90/tree-summary
-           [[:max nil :max]]
+           [#:data90 {:name :max
+                      :aggregate-with :max}]
            {"Foo" [{:max 1}]
             "Bar" [{:max 2}]}))))

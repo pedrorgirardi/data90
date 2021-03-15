@@ -30,8 +30,13 @@
 
   (= {:total-x 15, :total-y 15}
      (data90/aggregate
-       [[:total-x :x :sum]
-        [:total-y :y :sum]]
+       [#:data90 {:name :total-x
+                  :aggregate-by :x
+                  :aggregate-with :sum}
+
+        #:data90 {:name :total-y
+                  :aggregate-by :y
+                  :aggregate-with :sum}]
        [{:x 10 :y 5}
         {:x 5 :y 10}]))
 
