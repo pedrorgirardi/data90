@@ -48,10 +48,7 @@
 (defn tree
   "A tree grouped, aggregated and sorted.
 
-   D describes how to group and sort, and formula how to aggregate.
-
-   D is a vector of 'branch function', or a vector of
-   'branch function' and 'branch comparator' pairs."
+   D describes how to group and sort, and M how to aggregate."
   [D M dataset]
   (let [[d & D-rest] D
 
