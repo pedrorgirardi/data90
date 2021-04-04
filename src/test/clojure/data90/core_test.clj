@@ -219,7 +219,7 @@
 
              (data90/tree
                [#:data90 {:group-by :a
-                          :sort-by
+                          :sort-with
                           (fn [x1 x2]
                             (compare x2 x1))}]
                [#:data90 {:name :sum
@@ -239,7 +239,7 @@
              (data90/tree
                [#:data90 {:name :a
                           :group-by :a
-                          :sort-by
+                          :sort-with
                           (fn [x1 x2]
                             (compare (LocalDate/parse x1) (LocalDate/parse x2)))}]
                [#:data90 {:name :sum
@@ -259,7 +259,7 @@
              (data90/tree
                [#:data90 {:name "a"
                           :group-by :a
-                          :sort-by
+                          :sort-with
                           (fn [x1 x2]
                             (compare (LocalDate/parse x2) (LocalDate/parse x1)))}]
                [#:data90 {:name :sum
@@ -287,12 +287,12 @@
              (data90/tree
                ;; :a is asc; :b is desc.
                [#:data90 {:group-by :a
-                          :sort-by
+                          :sort-with
                           (fn [x1 x2]
                             (compare x1 x2))}
 
                 #:data90 {:group-by :b
-                          :sort-by
+                          :sort-with
                           (fn [x1 x2]
                             (compare x2 x1))}]
                [#:data90 {:name :sum

@@ -56,7 +56,7 @@
   (let [[d & D-rest] D
 
         {d-group-by :data90/group-by
-         d-sort-by :data90/sort-by} d
+         d-sort-with :data90/sort-with} d
 
         grouped (group-by d-group-by dataset)
 
@@ -72,8 +72,8 @@
                      []
                      grouped)
 
-        sorted (if d-sort-by
-                 (sort-by first d-sort-by aggregated)
+        sorted (if d-sort-with
+                 (sort-by first d-sort-with aggregated)
                  (sort-by first aggregated))
         sorted (vec sorted)]
 
