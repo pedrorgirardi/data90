@@ -72,9 +72,19 @@
                      []
                      grouped)
 
-        sorted (if d-sort-with
-                 (sort-by first d-sort-with aggregated)
-                 (sort-by first aggregated))
+        d-sort-asc (fn [x y]
+                     (compare x y))
+
+        d-sort-desc (fn [x y]
+                      (compare y x))
+
+        d-sort-asc-desc ({:asc d-sort-asc
+                          :desc d-sort-desc}
+                         d-sort-with)
+
+        d-sort-comparator (or d-sort-asc-desc d-sort-with d-sort-asc)
+
+        sorted (sort-by first d-sort-comparator aggregated)
         sorted (vec sorted)]
 
     (with-meta sorted {:d d :M M})))

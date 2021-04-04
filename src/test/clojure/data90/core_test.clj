@@ -219,9 +219,7 @@
 
              (data90/tree
                [#:data90 {:group-by :a
-                          :sort-with
-                          (fn [x1 x2]
-                            (compare x2 x1))}]
+                          :sort-with :desc}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
@@ -287,14 +285,10 @@
              (data90/tree
                ;; :a is asc; :b is desc.
                [#:data90 {:group-by :a
-                          :sort-with
-                          (fn [x1 x2]
-                            (compare x1 x2))}
+                          :sort-with :asc}
 
                 #:data90 {:group-by :b
-                          :sort-with
-                          (fn [x1 x2]
-                            (compare x2 x1))}]
+                          :sort-with :desc}]
                [#:data90 {:name :sum
                           :aggregate-by :x
                           :aggregate-with :sum}]
