@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
 
             [data90.core :as data90])
-  (:import (java.time LocalDate)))
+  (:import (java.time LocalDate)
+           (clojure.lang ExceptionInfo)))
 
 (def dataset1 (read-string (slurp (io/resource "dataset1.edn"))))
 
@@ -170,6 +171,23 @@
              [{:x 1}
               {:x 2}
               {:x 3}])))))
+
+(deftest dimension-test
+  (testing "Dimension from vector"
+    (is (= {:data90/group-by :a} (data90/dimension [:a])))
+    (is (= {:data90/group-by :a :data90/sort-with compare} (data90/dimension [:a compare]))))
+
+  (testing "Dimension from map"
+    (is (= {:data90/group-by :a} (data90/dimension {:data90/group-by :a}))))
+
+  (testing "Dimension from function"
+    (is (= {:data90/group-by :a} (data90/dimension :a)))
+    (is (= {:data90/group-by identity} (data90/dimension identity)))
+    (is (= {:data90/group-by #{}} (data90/dimension #{}))))
+
+  (testing "Exception"
+    (is (thrown? ExceptionInfo (data90/dimension nil)))
+    (is (thrown? ExceptionInfo (data90/dimension "")))))
 
 (deftest tree-test
   (let [dataset [{:operation_code "P1"
@@ -388,7 +406,11 @@
                              :aggregate-by :x
                              :aggregate-with :sum}]
                   nil)))
-      (is (= [] (data90/tree nil nil nil))))
+      (is (= "Can't create dimension from nil."
+             (try
+               (data90/tree nil nil nil)
+               (catch Exception e
+                 (ex-message e))))))
 
     (testing "Empty dataset"
       (is (= [] (data90/tree

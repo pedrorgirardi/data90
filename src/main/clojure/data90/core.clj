@@ -45,6 +45,22 @@
                          rows)]
     (merge ag-reduce ag-sum-min-max)))
 
+(defn dimension [x]
+  (cond
+    (map? x)
+    x
+
+    (vector? x)
+    (merge {:data90/group-by (first x)}
+           (when-let [sort-with (second x)]
+             {:data90/sort-with sort-with}))
+
+    (ifn? x)
+    {:data90/group-by x}
+
+    :else
+    (throw (ex-info (str "Can't create dimension from " (pr-str x) ".") {:x x}))))
+
 (defn tree
   "A tree grouped, aggregated and sorted.
 
@@ -53,7 +69,7 @@
   (let [[d & D-rest] D
 
         {d-group-by :data90/group-by
-         d-sort-with :data90/sort-with} d
+         d-sort-with :data90/sort-with} (dimension d)
 
         grouped (group-by d-group-by dataset)
 
