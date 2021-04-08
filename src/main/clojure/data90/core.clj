@@ -64,7 +64,18 @@
 (defn tree
   "A tree grouped, aggregated and sorted.
 
-   D describes how to group and sort, and M how to aggregate."
+   D describes how to group and sort, and M how to aggregate.
+
+   There are a few possible ways to describe a dimension: as a map, vector or function.
+
+   It's most convenient to describe it as a function e.g: :a, and it's probably
+   what you need most of the time.
+
+   In case you also need to specify the sort
+   comparator, you can use a vector form instead: [:a comparator].
+
+   The map form is the most verbose, but it's the canonical representation of
+   a dimension."
   [D M dataset]
   (let [[d & D-rest] D
 
