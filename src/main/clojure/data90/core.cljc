@@ -70,52 +70,45 @@
   (let [;; Coarce measure formula to canonical format.
         M (map measure M)
 
-        sum-min-max #{:sum :min :max}
-
-        ;; Formulas which are aggregated with sum, min or max.
-        formula-sum-min-max (filter
-                              (fn [{:data90/keys [aggregate-with]}]
-                                (sum-min-max aggregate-with))
-                              M)
-
-        ;; Formulas which are not aggregated with sum, min or max.
-        formula-reduce (remove
-                         (fn [{:data90/keys [aggregate-with]}]
-                           (sum-min-max aggregate-with))
-                         M)
-
         ag-fn {:sum +
                :min min
                :max max
                :count count}
 
-        ag-reduce (reduce
-                    (fn [m {aggregate-name :data90/name
-                            aggregate-with :data90/aggregate-with}]
-                      (assoc m aggregate-name ((or (ag-fn aggregate-with) aggregate-with) rows)))
-                    {}
-                    formula-reduce)
+        ;; Count and user-defined aggregates.
+        ;; Each aggregation function is called with rows.
+        user-defined-aggregates (->> M
+                                  (remove (comp #{:sum :min :max} :data90/aggregate-with))
+                                  (reduce
+                                    (fn [m {aggregate-name :data90/name
+                                            aggregate-with :data90/aggregate-with}]
+                                      (let [f (or (ag-fn aggregate-with) aggregate-with)]
+                                        (assoc m aggregate-name (f rows))))
+                                    {}))
 
-        ag-sum-min-max (reduce
-                         (fn [M row]
-                           (->> formula-sum-min-max
-                             (map
-                               (fn [{aggregate-name :data90/name
-                                     aggregate-by :data90/aggregate-by
-                                     aggregate-with :data90/aggregate-with}]
-                                 (cond
-                                   (#{:min :max} aggregate-with)
-                                   (let [v0 (or (get M aggregate-name) (aggregate-by row))
-                                         v1 (aggregate-by row)]
-                                     [aggregate-name (some-> v0 ((ag-fn aggregate-with) (or v1 v0)))])
+        ;; Sum, min and max aggregates.
+        sum-min-max-aggregates (reduce
+                                 (fn [acc row]
+                                   (->> M
+                                     (filter (comp #{:sum :min :max} :data90/aggregate-with))
+                                     (map
+                                       (fn [{aggregate-name :data90/name
+                                             aggregate-by :data90/aggregate-by
+                                             aggregate-with :data90/aggregate-with}]
+                                         (cond
+                                           (#{:min :max} aggregate-with)
+                                           (let [v0 (or (get acc aggregate-name) (aggregate-by row))
+                                                 v1 (aggregate-by row)]
+                                             [aggregate-name (some-> v0 ((ag-fn aggregate-with) (or v1 v0)))])
 
-                                   (= :sum aggregate-with)
-                                   [aggregate-name (+ (or (get M aggregate-name) 0) (or (aggregate-by row) 0))])))
-                             (into {})))
-                         {}
-                         rows)]
+                                           (= :sum aggregate-with)
+                                           [aggregate-name (+ (or (get acc aggregate-name) 0)
+                                                             (or (aggregate-by row) 0))])))
+                                     (into {})))
+                                 {}
+                                 rows)]
 
-    (merge ag-reduce ag-sum-min-max)))
+    (merge user-defined-aggregates sum-min-max-aggregates)))
 
 (defn tree
   "A tree grouped, aggregated and sorted.
