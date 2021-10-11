@@ -4,8 +4,48 @@
 
    [data90.specs]))
 
+(defn dimension [x]
+  (cond
+    (map? x)
+    x
+
+    (vector? x)
+    (merge {:data90/group-by (first x)}
+           (when-let [sort-with (second x)]
+             {:data90/sort-with sort-with}))
+
+    (ifn? x)
+    {:data90/group-by x}
+
+    :else
+    (throw (ex-info (str "Can't create dimension from " (pr-str x) ".") {:x x}))))
+
+(s/fdef dimension
+  :args (s/cat :x any?)
+  :ret :data90/dimension)
+
+(defn measure [x]
+  (cond
+    (map? x)
+    x
+
+    (vector? x)
+    (let [[ag-name ag-by ag-with] x]
+      {:data90/name ag-name
+       :data90/aggregate-by ag-by
+       :data90/aggregate-with ag-with})
+
+    :else
+    (throw (ex-info (str "Can't create measure from " (pr-str x) ".") {:x x}))))
+
+(s/fdef measure
+  :args (s/cat :x any?)
+  :ret :data90/measure)
+
 (defn aggregate [M rows]
   (let [sum-min-max #{:sum :min :max}
+
+        M (map measure M)
 
         formula-sum-min-max (filter
                               (fn [{:data90/keys [aggregate-with]}]
@@ -48,26 +88,6 @@
                          {}
                          rows)]
     (merge ag-reduce ag-sum-min-max)))
-
-(defn dimension [x]
-  (cond
-    (map? x)
-    x
-
-    (vector? x)
-    (merge {:data90/group-by (first x)}
-           (when-let [sort-with (second x)]
-             {:data90/sort-with sort-with}))
-
-    (ifn? x)
-    {:data90/group-by x}
-
-    :else
-    (throw (ex-info (str "Can't create dimension from " (pr-str x) ".") {:x x}))))
-
-(s/fdef dimension
-  :args (s/cat :x any?)
-  :ret :data90/dimension)
 
 (defn tree
   "A tree grouped, aggregated and sorted.

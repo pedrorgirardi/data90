@@ -19,166 +19,130 @@
 (deftest aggregate-test
   (testing "Sum"
     (is (= {}
-           (data90/aggregate
-             nil
-             nil)))
+          (data90/aggregate
+            nil
+            nil)))
 
     (is (= {}
-           (data90/aggregate
-             nil
-             [])))
+          (data90/aggregate
+            nil
+            [])))
 
     (is (= {}
-           (data90/aggregate
-             nil
-             [{:x 3 :y 2}])))
+          (data90/aggregate
+            nil
+            [{:x 3 :y 2}])))
 
     (is (= {:sum-x 3
             :sum-y 2}
-           (data90/aggregate
-             [#:data90 {:name :sum-x
-                        :aggregate-by :x
-                        :aggregate-with :sum}
+          (data90/aggregate
+            [#:data90 {:name :sum-x
+                       :aggregate-by :x
+                       :aggregate-with :sum}
 
-              #:data90 {:name :sum-y
-                        :aggregate-by :y
-                        :aggregate-with :sum}]
-             [{:x 3 :y 2}])))
+             #:data90 {:name :sum-y
+                       :aggregate-by :y
+                       :aggregate-with :sum}]
+            [{:x 3 :y 2}])))
 
     (is (= {}
-           (data90/aggregate
-             nil
-             [{:x 3 :y 2}
-              {:x 2 :y 3}])))
+          (data90/aggregate
+            nil
+            [{:x 3 :y 2}
+             {:x 2 :y 3}])))
 
     (let [rows [{:x 3 :y 2}
                 {:x 2 :y 3}]]
       (is (= {:sum-x 5 :sum-y 5}
-             (data90/aggregate
-               [#:data90 {:name :sum-x
-                          :aggregate-by :x
-                          :aggregate-with :sum}
+            (data90/aggregate
+              [[:sum-x :x :sum]
+               [:sum-y :y :sum]]
+              rows))))
 
-                #:data90 {:name :sum-y
-                          :aggregate-by :y
-                          :aggregate-with :sum}]
-               rows))))
+    (is (= {:hours-sum 10}
+          (data90/aggregate
+            [[:hours-sum :hours :sum]]
+            [{:hours 3}
+             {:hours 7}])))
 
-    (let [rows [{:hours 3}
-                {:hours 7}]]
-      (is (= {:hours 10}
-             (data90/aggregate
-               [#:data90 {:name :hours
-                          :aggregate-by :hours
-                          :aggregate-with :sum}]
+    (is (= {:total 3}
+          (data90/aggregate
+            [[:total :hours :sum]]
 
-               rows))))
+            [{:hours 3}
+             {:hours nil}])))
 
-    (let [rows [{:hours 3}
-                {:hours nil}]]
-      (is (= {:total 3}
-             (data90/aggregate
-               [#:data90 {:name :total
-                          :aggregate-by :hours
-                          :aggregate-with :sum}]
-               rows))))
-
-    (let [rows [{:hours nil}
-                {:hours nil}]]
-      (is (= {:total 0}
-             (data90/aggregate
-               [#:data90 {:name :total
-                          :aggregate-by :hours
-                          :aggregate-with :sum}]
-               rows)))))
+    (is (= {:total 0}
+          (data90/aggregate
+            [[:total :hours :sum]]
+            [{:hours nil}
+             {:hours nil}]))))
 
   (testing "Min"
     (is (= {:min-x -1}
-           (data90/aggregate
-             [#:data90 {:name :min-x
-                        :aggregate-by :x
-                        :aggregate-with :min}]
-             [{:x 1}
-              {:x nil}
-              {:x -1}]))))
+          (data90/aggregate
+            [[:min-x :x :min]]
+            [{:x 1}
+             {:x nil}
+             {:x -1}]))))
 
   (testing "Max"
     (is (= {:max-x 3}
-           (data90/aggregate
-             [#:data90 {:name :max-x
-                        :aggregate-by :x
-                        :aggregate-with :max}]
-             [{:x 1}
-              {:x 2}
-              {:x nil}
-              {:x 3}
-              {:x -10}]))))
+          (data90/aggregate
+            [[:max-x :x :max]]
+            [{:x 1}
+             {:x 2}
+             {:x nil}
+             {:x 3}
+             {:x -10}]))))
 
   (testing "Count"
     (is (= {:count 3}
-           (data90/aggregate
-             [#:data90 {:name :count
-                        :aggregate-by :x
-                        :aggregate-with :count}]
-             [{}
-              {}
-              {}]))))
+          (data90/aggregate
+            [[:count :x :count]]
+            [{}
+             {}
+             {}]))))
 
   (testing "User defined"
     (is (= {:count 3}
-           (data90/aggregate
-             [#:data90 {:name :count
-                        :aggregate-by :x
-                        :aggregate-with (fn [rows]
-                                          (count rows))}]
+          (data90/aggregate
+            [#:data90 {:name :count
+                       :aggregate-by :x
+                       :aggregate-with (fn [rows]
+                                         (count rows))}]
 
-             [{}
-              {}
-              {}])))
+            [{}
+             {}
+             {}])))
 
     (is (= {:min 1}
-           (data90/aggregate
-             [#:data90 {:name :min
-                        :aggregate-by :x
-                        :aggregate-with (fn [rows]
-                                          (->> rows
-                                               (map :x)
-                                               (reduce min)))}]
-             [{:x 1}
-              {:x 2}
-              {:x 3}]))))
+          (data90/aggregate
+            [#:data90 {:name :min
+                       :aggregate-by :x
+                       :aggregate-with (fn [rows]
+                                         (->> rows
+                                           (map :x)
+                                           (reduce min)))}]
+            [{:x 1}
+             {:x 2}
+             {:x 3}]))))
 
   (testing "All combined"
-    (is (= {:count 3
-            :max 3
+    (is (= {:sum 6
             :min 1
-            :sum 6
+            :max 3
+            :count 3
             :user-count 3}
-           (data90/aggregate
-             [#:data90 {:name :sum
-                        :aggregate-by :x
-                        :aggregate-with :sum}
-
-              #:data90 {:name :min
-                        :aggregate-by :x
-                        :aggregate-with :min}
-
-
-              #:data90 {:name :max
-                        :aggregate-by :x
-                        :aggregate-with :max}
-
-
-              #:data90 {:name :count
-                        :aggregate-by :x
-                        :aggregate-with :count}
-
-              #:data90 {:name :user-count
-                        :aggregate-by :x
-                        :aggregate-with count}]
-             [{:x 1}
-              {:x 2}
-              {:x 3}])))))
+          (data90/aggregate
+            [[:sum :x :sum]
+             [:min :x :min]
+             [:max :x :max]
+             [:count :x :count]
+             [:user-count :x count]]
+            [{:x 1}
+             {:x 2}
+             {:x 3}])))))
 
 (deftest dimension-test
   (testing "Dimension from vector"
@@ -196,6 +160,23 @@
   (testing "Exception"
     (is (thrown? ExceptionInfo (data90/dimension nil)))
     (is (thrown? ExceptionInfo (data90/dimension "")))))
+
+(deftest measure-test
+  (testing "Measure from vector"
+    (is (= #:data90{:aggregate-by :hours, :aggregate-with :sum, :name :sum}
+          (data90/measure [:sum :hours :sum]))))
+
+  (testing "Measure from map"
+    (is (= #:data90{:name :sum
+                    :aggregate-by :hours
+                    :aggregate-with :sum}
+          (data90/measure #:data90{:name :sum
+                                   :aggregate-by :hours
+                                   :aggregate-with :sum}))))
+
+  (testing "Exception"
+    (is (thrown? ExceptionInfo (data90/measure nil)))
+    (is (thrown? ExceptionInfo (data90/measure "")))))
 
 (deftest tree-test
   (let [dataset [{:operation_code "P1"
