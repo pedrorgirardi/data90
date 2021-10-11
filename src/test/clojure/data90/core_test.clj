@@ -428,16 +428,35 @@
                   []))))
 
     (testing "Metadata"
-      (is (= {:d #:data90{:group-by :x}
-              :M [#:data90{:aggregate-by :x
-                           :aggregate-with :sum
-                           :name :x}]}
-            (meta (data90/tree
-                    [#:data90 {:group-by :x}]
-                    [#:data90 {:name :x
-                               :aggregate-by :x
-                               :aggregate-with :sum}]
-                    [])))))
+      (let [tree (data90/tree
+                   [:x :y]
+                   [[:x :x :sum]
+                    [:y :y :count]]
+                   [{:x 1 :y :a}
+                    {:x 1 :y :b}
+                    {:x 2 :y :b}])]
+
+        ;; Where tree is:
+        ;; [[1 [{:y 2, :x 2} [[:a [{:y 1, :x 1}]] [:b [{:y 1, :x 1}]]]]]
+        ;;  [2 [{:y 1, :x 2} [[:b [{:y 1, :x 2}]]]]]]
+
+        (is (= {:d #:data90{:group-by :x}
+                :M [#:data90{:aggregate-by :x, :aggregate-with :sum, :name :x}
+                    #:data90{:aggregate-by :y, :aggregate-with :count, :name :y}]}
+
+              (meta tree)))
+
+        ;; Second dimension metadata.
+        (is (= [{:d #:data90{:group-by :y}
+                 :M
+                 [#:data90{:aggregate-by :x, :aggregate-with :sum, :name :x}
+                  #:data90{:aggregate-by :y, :aggregate-with :count, :name :y}]}
+                {:d #:data90{:group-by :y}
+                 :M
+                 [#:data90{:aggregate-by :x, :aggregate-with :sum, :name :x}
+                  #:data90{:aggregate-by :y, :aggregate-with :count, :name :y}]}]
+
+              (map (comp meta second second) tree)))))
 
     (testing "Dataset 1"
       (is (= [["Chapadão do Sul"

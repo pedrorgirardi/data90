@@ -107,8 +107,10 @@
   [D M dataset]
   (let [[d & D-rest] D
 
+        M (map measure M)
+
         {d-group-by :data90/group-by
-         d-sort-with :data90/sort-with} (dimension d)
+         d-sort-with :data90/sort-with :as d} (dimension d)
 
         grouped (group-by d-group-by dataset)
 
