@@ -1,4 +1,10 @@
 (ns data90.core
+  "Data90 is a data transformation library.
+
+  It's unoptimized, but its performance is acceptable for 'small data'.
+
+  It doesn't have any third-party dependency,
+  and it supports Clojure and ClojureScript."
   (:require
    [clojure.spec.alpha :as s]
 
@@ -46,9 +52,9 @@
   "Aggregate rows.
 
   Returns a map where keys are derived
-  from a measure's specification name.
+  from a measure's formula name.
 
-  M is a collection of measure specification.
+  M is a collection of measure formula.
 
   A measure is defined by a name, an aggregation function,
   and an accessor function to read the value from each row.
@@ -61,15 +67,18 @@
 
   See `data90.core/measure`."
   [M rows]
-  (let [sum-min-max #{:sum :min :max}
-
+  (let [;; Coarce measure formula to canonical format.
         M (map measure M)
 
+        sum-min-max #{:sum :min :max}
+
+        ;; Formulas which are aggregated with sum, min or max.
         formula-sum-min-max (filter
                               (fn [{:data90/keys [aggregate-with]}]
                                 (sum-min-max aggregate-with))
                               M)
 
+        ;; Formulas which are not aggregated with sum, min or max.
         formula-reduce (remove
                          (fn [{:data90/keys [aggregate-with]}]
                            (sum-min-max aggregate-with))
@@ -90,21 +99,22 @@
         ag-sum-min-max (reduce
                          (fn [M row]
                            (->> formula-sum-min-max
-                                (map
-                                  (fn [{aggregate-name :data90/name
-                                        aggregate-by :data90/aggregate-by
-                                        aggregate-with :data90/aggregate-with}]
-                                    (cond
-                                      (#{:min :max} aggregate-with)
-                                      (let [v0 (or (get M aggregate-name) (aggregate-by row))
-                                            v1 (aggregate-by row)]
-                                        [aggregate-name (some-> v0 ((ag-fn aggregate-with) (or v1 v0)))])
+                             (map
+                               (fn [{aggregate-name :data90/name
+                                     aggregate-by :data90/aggregate-by
+                                     aggregate-with :data90/aggregate-with}]
+                                 (cond
+                                   (#{:min :max} aggregate-with)
+                                   (let [v0 (or (get M aggregate-name) (aggregate-by row))
+                                         v1 (aggregate-by row)]
+                                     [aggregate-name (some-> v0 ((ag-fn aggregate-with) (or v1 v0)))])
 
-                                      (= :sum aggregate-with)
-                                      [aggregate-name (+ (or (get M aggregate-name) 0) (or (aggregate-by row) 0))])))
-                                (into {})))
+                                   (= :sum aggregate-with)
+                                   [aggregate-name (+ (or (get M aggregate-name) 0) (or (aggregate-by row) 0))])))
+                             (into {})))
                          {}
                          rows)]
+
     (merge ag-reduce ag-sum-min-max)))
 
 (defn tree
