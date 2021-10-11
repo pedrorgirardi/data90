@@ -1,4 +1,8 @@
-(ns data90.core)
+(ns data90.core
+  (:require
+   [clojure.spec.alpha :as s]
+
+   [data90.specs]))
 
 (defn aggregate [M rows]
   (let [sum-min-max #{:sum :min :max}
@@ -61,6 +65,10 @@
     :else
     (throw (ex-info (str "Can't create dimension from " (pr-str x) ".") {:x x}))))
 
+(s/fdef dimension
+  :args (s/cat :x any?)
+  :ret :data90/dimension)
+
 (defn tree
   "A tree grouped, aggregated and sorted.
 
@@ -71,11 +79,11 @@
    It's most convenient to describe it as a function e.g: :a, and it's probably
    what you need most of the time.
 
-   In case you also need to specify the sort
-   comparator, you can use a vector form instead: [:a comparator].
+   In case you also need to specify a sort comparator,
+   you can use a vector form instead: [:a >].
 
-   The map form is the most verbose, but it's the canonical representation of
-   a dimension."
+   The map form is the most verbose, but it's the canonical
+   representation of a dimension."
   [D M dataset]
   (let [[d & D-rest] D
 

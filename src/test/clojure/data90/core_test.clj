@@ -1,10 +1,18 @@
 (ns data90.core-test
-  (:require [clojure.test :refer :all]
-            [clojure.java.io :as io]
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [clojure.java.io :as io]
+   [clojure.spec.test.alpha :as stest]
 
-            [data90.core :as data90])
-  (:import (java.time LocalDate)
-           (clojure.lang ExceptionInfo)))
+   [data90.core :as data90])
+
+  (:import
+   (java.time LocalDate)
+   (clojure.lang ExceptionInfo)))
+
+
+(stest/instrument `data90/dimension)
+
 
 (def dataset1 (read-string (slurp (io/resource "dataset1.edn"))))
 
