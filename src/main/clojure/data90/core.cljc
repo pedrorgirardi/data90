@@ -42,7 +42,25 @@
   :args (s/cat :x any?)
   :ret :data90/measure)
 
-(defn aggregate [M rows]
+(defn aggregate
+  "Aggregate rows.
+
+  Returns a map where keys are derived
+  from a measure's specification name.
+
+  M is a collection of measure specification.
+
+  A measure is defined by a name, an aggregation function,
+  and an accessor function to read the value from each row.
+
+  Example:
+
+  (aggregate [[:x-sum :x :sum]] [{:x 10} {:x 5}])
+
+  ;; => {:x-sum 15}
+
+  See `data90.core/measure`."
+  [M rows]
   (let [sum-min-max #{:sum :min :max}
 
         M (map measure M)
