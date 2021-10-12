@@ -456,7 +456,49 @@
                  [#:data90{:aggregate-by :x, :aggregate-with :sum, :name :x}
                   #:data90{:aggregate-by :y, :aggregate-with :count, :name :y}]}]
 
-              (map (comp meta second second) tree)))))
+              (map (comp meta second second) tree)))
+
+
+        (let [D-ref (atom [])]
+          (data90/tree
+            [:x]
+            [[:y :y (fn [rows]
+                      (swap! D-ref conj (meta rows)))]]
+            [{:x :a :y 1}])
+
+          (is (= [{:D [#:data90{:group-by :x}]
+                   :leaf? true}]
+                @D-ref)))
+
+        (let [D-ref (atom [])]
+          (data90/tree
+            [:d1 :d2 :d3 :m1]
+            [[:m1 :m1 (fn [rows]
+                        (swap! D-ref conj (meta rows)))]]
+            [{:d1 :a
+              :d2 :b
+              :d3 :c
+              :m1 1}])
+
+          (is (= [{:D [#:data90{:group-by :d1}]
+                   :leaf? false}
+
+                  {:D [#:data90{:group-by :d1}
+                       #:data90{:group-by :d2}]
+                   :leaf? false}
+
+                  {:D [#:data90{:group-by :d1}
+                       #:data90{:group-by :d2}
+                       #:data90{:group-by :d3}]
+                   :leaf? false}
+
+                  {:D
+                   [#:data90{:group-by :d1}
+                    #:data90{:group-by :d2}
+                    #:data90{:group-by :d3}
+                    #:data90{:group-by :m1}]
+                   :leaf? true}]
+                @D-ref)))))
 
     (testing "Dataset 1"
       (is (= [["Chapadão do Sul"
@@ -585,3 +627,4 @@
                          :aggregate-by :timestamp_delta_as_hour
                          :aggregate-with :sum}]
               dataset1))))))
+
