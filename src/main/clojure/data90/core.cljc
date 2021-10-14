@@ -125,23 +125,19 @@
 
    The map form is the most verbose, but it's the canonical
    representation of a dimension."
-  [D M rows]
+  [D M dataset]
   (let [[d & D-rest] D
+
+        M (map measure M)
 
         {d-group-by :data90/group-by
          d-sort-with :data90/sort-with :as d} (dimension d)
 
-        ;; Aggregation might need to know dimensions, and if it's a leaf row.
-        M (with-meta (map measure M)
-            (-> (meta M)
-              (update :D (fnil conj []) d)
-              (update :leaf? (constantly (empty? D-rest)))))
-
-        grouped (group-by d-group-by rows)
+        grouped (group-by d-group-by dataset)
 
         aggregated (reduce-kv
                      (fn [acc k rows]
-                       (let [summary (aggregate M (with-meta rows (meta M)))
+                       (let [summary (aggregate M rows)
 
                              branches (when (seq D-rest)
                                         (tree D-rest M rows))]
