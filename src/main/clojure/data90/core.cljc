@@ -163,3 +163,27 @@
 
     (with-meta sorted {:d d :M M})))
 
+
+(comment
+
+  (require '[portal.api :as p])
+
+  (p/open {:launcher :vs-code})
+
+  (p/clear)
+
+  (p/close)
+
+  (add-tap #'p/submit)
+
+  (remove-tap #'p/submit)
+
+
+  (tap>
+   (tree
+    [:fruit]
+    [[:x :x :sum]]
+    [{:fruit "apple" :x 1}
+     {:fruit "apple" :x 10}]))
+     
+)
