@@ -125,7 +125,7 @@
 
    The map form is the most verbose, but it's the canonical
    representation of a dimension."
-  [D M dataset]
+  [D M rows]
   (let [[d & D-rest] D
 
         M (map measure M)
@@ -133,7 +133,7 @@
         {d-group-by :data90/group-by
          d-sort-with :data90/sort-with :as d} (dimension d)
 
-        grouped (group-by d-group-by dataset)
+        grouped (group-by d-group-by rows)
 
         aggregated (reduce-kv
                      (fn [acc k rows]
@@ -159,8 +159,7 @@
 
         comparator (or sort-asc-desc d-sort-with sort-asc)
 
-        sorted (sort-by first comparator aggregated)
-        sorted (vec sorted)]
+        sorted (sort-by first comparator aggregated)]
 
     (with-meta sorted {:d d :M M})))
 
