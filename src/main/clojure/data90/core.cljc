@@ -180,10 +180,30 @@
 
 
   (tap>
-   (tree
-    [:fruit]
-    [[:x :x :sum]]
-    [{:fruit "apple" :x 1}
-     {:fruit "apple" :x 10}]))
-     
-)
+    (tree
+      ;; -- Dimensões
+      [;; Agrupamento por Operador
+       {:data90/group-by :operator
+        :data90/sort-with :asc}
+
+       ;; Agrupamento por Operação
+       {:data90/group-by :operation
+        :data90/sort-with :desc}]
+
+      ;; -- Medidas
+      [#:data90 {:name :hours
+                 :aggregate-by :hours
+                 :aggregate-with :sum}]
+
+      ;; -- Dataset
+      [{:operation "A" :operator "Pedro" :hours 1}
+       {:operation "A" :operator "Davi" :hours 2}
+       {:operation "C" :operator "Davi" :hours 2}
+       {:operation "D" :operator "Davi" :hours 2}
+       {:operation "D" :operator "Davi" :hours 2}
+       {:operation "D" :operator "Davi" :hours 2}
+       {:operation "D" :operator "Davi" :hours 2}
+       {:operation "D" :operator "Davi" :hours 2}
+       {:operation "B" :operator "Davi" :hours 1}]))
+
+  )
