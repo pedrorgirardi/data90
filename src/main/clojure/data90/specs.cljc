@@ -27,5 +27,5 @@
 (s/def :data90/measure
   (s/keys
     :req [:data90/name
-          :data90/aggregate-by
-          :data90/aggregate-with]))
+          :data90/aggregate-with]
+    :opt [:data90/aggregate-by]))

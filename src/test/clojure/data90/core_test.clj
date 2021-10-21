@@ -11,10 +11,11 @@
    (clojure.lang ExceptionInfo)))
 
 
-(stest/instrument `data90/dimension)
+(stest/instrument [`data90/dimension `data90/measure])
 
 
 (def dataset1 (read-string (slurp (io/resource "dataset1.edn"))))
+
 
 (deftest aggregate-test
   (testing "Sum"
@@ -108,7 +109,6 @@
     (is (= {:count 3}
           (data90/aggregate
             [#:data90 {:name :count
-                       :aggregate-by :x
                        :aggregate-with (fn [rows]
                                          (count rows))}]
 
@@ -119,7 +119,6 @@
     (is (= {:min 1}
           (data90/aggregate
             [#:data90 {:name :min
-                       :aggregate-by :x
                        :aggregate-with (fn [rows]
                                          (->> rows
                                            (map :x)
