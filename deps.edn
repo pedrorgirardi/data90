@@ -19,8 +19,7 @@
   ;; Invoke with `clojure -X:test:test-runner`, or `bin/test`.
   :test-runner
   {:extra-deps
-   {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner"
-                               :sha "dd6da11611eeb87f08780a30ac8ea6012d4c05ce"}}
+   {io.github.cognitect-labs/test-runner {:git/sha "a85b3b02765fb68684ab9ee4a8598eacf7e471d2"}}
 
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test/clojure"]}}}}
