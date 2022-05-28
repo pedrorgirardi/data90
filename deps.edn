@@ -10,8 +10,7 @@
   :dev
   {:extra-paths ["src/dev/clojure" "src/dev/resources"]
    :extra-deps
-   {org.clojure/tools.namespace {:mvn/version "1.3.0"}
-    djblue/portal {:mvn/version "0.16.2"}}}
+   {org.clojure/tools.namespace {:mvn/version "1.3.0"}}}
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}
