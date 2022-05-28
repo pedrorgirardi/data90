@@ -163,6 +163,20 @@
 
     (with-meta sorted {:d d :M M})))
 
+(defn transform
+  "Group, aggregate and sort data.
+
+   D describes how to group and sort, and M how to aggregate.
+
+   There are a few possible ways to describe a dimension: as a map, vector or function.
+
+   It's most convenient to describe it as a function e.g: `:a`, and it's probably
+   what you need most of the time.
+
+   The map form is the most verbose, but it's the canonical
+   representation of a dimension."
+  [{:keys [D M]} data]
+  (tree D M data))
 
 (comment
 
