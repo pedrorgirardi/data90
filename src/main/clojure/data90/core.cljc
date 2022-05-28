@@ -176,6 +176,7 @@
    The map form is the most verbose, but it's the canonical
    representation of a dimension."
   [{:keys [D M]} data]
+  ;; TODO: Rework
   (tree D M data))
 
 (comment
