@@ -125,86 +125,70 @@
 
    The map form is the most verbose, but it's the canonical
    representation of a dimension."
-  [D M rows]
-  (let [[d & D-rest] D
+  ([{:keys [D M rows]}]
+   (tree D M rows))
+  ([D M rows]
+   (let [[d & D-rest] D
 
-        M (map measure M)
+         M (map measure M)
 
-        {d-group-by :data90/group-by
-         d-sort-with :data90/sort-with :as d} (dimension d)
+         {d-group-by :data90/group-by
+          d-sort-with :data90/sort-with :as d} (dimension d)
 
-        grouped (group-by d-group-by rows)
+         grouped (group-by d-group-by rows)
 
-        aggregated (reduce-kv
-                     (fn [acc k rows]
-                       (let [summary (aggregate M rows)
+         aggregated (reduce-kv
+                      (fn [acc k rows]
+                        (let [summary (aggregate M rows)
 
-                             branches (when (seq D-rest)
-                                        (tree D-rest M rows))]
-                         (conj acc [k (if branches
-                                        [summary branches]
-                                        [summary])])))
-                     []
-                     grouped)
+                              branches (when (seq D-rest)
+                                         (tree D-rest M rows))]
+                          (conj acc [k (if branches
+                                         [summary branches]
+                                         [summary])])))
+                      []
+                      grouped)
 
-        sort-asc (fn [x y]
-                   (compare x y))
+         sort-asc (fn [x y]
+                    (compare x y))
 
-        sort-desc (fn [x y]
-                    (compare y x))
+         sort-desc (fn [x y]
+                     (compare y x))
 
-        sort-asc-desc ({:asc sort-asc
-                        :desc sort-desc}
-                       d-sort-with)
+         sort-asc-desc ({:asc sort-asc
+                         :desc sort-desc}
+                        d-sort-with)
 
-        comparator (or sort-asc-desc d-sort-with sort-asc)
+         comparator (or sort-asc-desc d-sort-with sort-asc)
 
-        sorted (sort-by first comparator aggregated)]
+         sorted (sort-by first comparator aggregated)]
 
-    (with-meta sorted {:d d :M M})))
-
-(defn transform
-  "Group, aggregate and sort data.
-
-   D describes how to group and sort, and M how to aggregate.
-
-   There are a few possible ways to describe a dimension: as a map, vector or function.
-
-   It's most convenient to describe it as a function e.g: `:a`, and it's probably
-   what you need most of the time.
-
-   The map form is the most verbose, but it's the canonical
-   representation of a dimension."
-  [{:keys [D M]} data]
-  ;; TODO: Rework
-  (tree D M data))
+     (with-meta sorted {:d d :M M}))))
 
 (comment
 
   (tree
-    ;; -- Dimensões
-    [;; Agrupamento por Operador
-     {:data90/group-by :operator
-      :data90/sort-with :asc}
+    {:D
+     [{:data90/group-by :operator
+       :data90/sort-with :asc}
 
-     ;; Agrupamento por Operação
-     {:data90/group-by :operation
-      :data90/sort-with :desc}]
+      {:data90/group-by :operation
+       :data90/sort-with :desc}]
 
-    ;; -- Medidas
-    [#:data90 {:name :hours
-               :aggregate-by :hours
-               :aggregate-with :sum}]
+     :M
+     [#:data90 {:name :hours
+                :aggregate-by :hours
+                :aggregate-with :sum}]
 
-    ;; -- Dataset
-    [{:operation "A" :operator "Pedro" :hours 1}
-     {:operation "A" :operator "Davi" :hours 2}
-     {:operation "C" :operator "Davi" :hours 2}
-     {:operation "D" :operator "Davi" :hours 2}
-     {:operation "D" :operator "Davi" :hours 2}
-     {:operation "D" :operator "Davi" :hours 2}
-     {:operation "D" :operator "Davi" :hours 2}
-     {:operation "D" :operator "Davi" :hours 2}
-     {:operation "B" :operator "Davi" :hours 1}])
+     :rows
+     [{:operation "A" :operator "Pedro" :hours 1}
+      {:operation "A" :operator "Davi" :hours 2}
+      {:operation "C" :operator "Davi" :hours 2}
+      {:operation "D" :operator "Davi" :hours 2}
+      {:operation "D" :operator "Davi" :hours 2}
+      {:operation "D" :operator "Davi" :hours 2}
+      {:operation "D" :operator "Davi" :hours 2}
+      {:operation "D" :operator "Davi" :hours 2}
+      {:operation "B" :operator "Davi" :hours 1}]})
 
   )
