@@ -457,6 +457,25 @@
 
               (map (comp meta second second) tree)))))
 
+    (testing "Computed column"
+      (is (= [["a"
+               [{:a 2,
+                 :b 2,
+                 :c 4}]]]
+            (data90/tree
+              {:D [:x]
+               :M [[:a :a :sum]
+                   [:b :b :sum]
+                   [:c :c (fn [rows]
+                            (reduce
+                              (fn [acc {:keys [a b]}]
+                                (+ acc a b))
+                              0
+                              rows))]]
+               :rows
+               [{:x "a" :a 1 :b 1}
+                {:x "a" :a 1 :b 1}]}))))
+
     (testing "Dataset 1"
       (is (= [["Chapadão do Sul"
                [{:hours 71.99999999999999}
