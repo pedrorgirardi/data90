@@ -46,6 +46,24 @@
                        :aggregate-with :sum}]
             [{:x 3 :y 2}])))
 
+    (is (= {:x 3
+            :y 2
+            :x+y 5}
+          (data90/aggregate
+            [#:data90 {:name :x
+                       :aggregate-by :x
+                       :aggregate-with :sum}
+
+             #:data90 {:name :y
+                       :aggregate-by :y
+                       :aggregate-with :sum}
+
+             #:data90 {:name :x+y
+                       :aggregate-by (fn [{:keys [x y]}]
+                                       (+ x y))
+                       :aggregate-with :sum}]
+            [{:x 3 :y 2}])))
+
     (is (= {}
           (data90/aggregate
             nil
@@ -472,6 +490,27 @@
                                 (+ acc a b))
                               0
                               rows))]]
+               :rows
+               [{:x "a" :a 1 :b 1}
+                {:x "a" :a 1 :b 1}]})))
+
+      (is (= [["a"
+               [{:a 2,
+                 :b 2,
+                 :c 4}]]]
+            (data90/tree
+              {:D [:x]
+               :M [[:a :a :sum]
+                   [:b :b :sum]
+                   [:c :c (fn [rows]
+                            (let [M [#:data90 {:name :c
+                                               :aggregate-by (fn [{:keys [a b]}]
+                                                               (+ a b))
+                                               :aggregate-with :sum}]
+
+                                  aggregated (data90/aggregate M rows)]
+
+                              (:c aggregated)))]]
                :rows
                [{:x "a" :a 1 :b 1}
                 {:x "a" :a 1 :b 1}]}))))
