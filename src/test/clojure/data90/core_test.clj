@@ -642,3 +642,26 @@
                          :aggregate-by :timestamp_delta_as_hour
                          :aggregate-with :sum}]
               dataset1))))))
+
+(deftest flatten-test
+  (is (= [;; -- Op. A
+          ["Op. A" 3]
+          ["Op. A" "Davi" 2]
+          ["Op. A" "Pedro" 1]
+
+          ;; -- Op. B
+          ["Op. B" 3]
+          ["Op. B" "Davi" 3]
+
+          ;; -- Op. C
+          ["Op. C" 3]
+          ["Op. C" "Davi" 3]]
+        (data90/flatten
+          (data90/tree
+            {:D [:operation :operator]
+             :M [[:H :H :sum]]
+             :rows
+             [{:operation "Op. A" :operator "Pedro" :H 1}
+              {:operation "Op. A" :operator "Davi" :H 2}
+              {:operation "Op. B" :operator "Davi" :H 3}
+              {:operation "Op. C" :operator "Davi" :H 3}]})))))
