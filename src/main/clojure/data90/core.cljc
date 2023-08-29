@@ -129,15 +129,28 @@
   {:asc compare-ascending
    :desc compare-descending})
 
+(defn compare-with [x]
+  (let [{accessor :accessor
+         asc-desc :comp} (cond
+                           (map? x)
+                           x
+
+                           (vector? x)
+                           {:accessor (first x)
+                            :comp (last x)})
+
+        comparator (name->compare asc-desc)]
+    (fn [a b]
+      (comparator
+        (accessor a)
+        (accessor b)))))
+
 (defn compares
   "Retorna um comparator para a coleção de `sorting`."
   [sorting]
   (fn [a b]
-    (loop [[{accessor :accessor
-             asc-desc :comp} & sorting] sorting]
-      (let [order ((name->compare asc-desc)
-                   (accessor a)
-                   (accessor b))]
+    (loop [[x & sorting] sorting]
+      (let [order ((compare-with x) a b)]
         (if (and (zero? order) sorting)
           (recur sorting)
           order)))))
