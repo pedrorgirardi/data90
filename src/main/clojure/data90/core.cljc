@@ -129,7 +129,7 @@
   {:asc compare-ascending
    :desc compare-descending})
 
-(defn tree-comparator
+(defn compares
   "Retorna um comparator para a coleção de `sorting`."
   [sorting]
   (fn [a b]
