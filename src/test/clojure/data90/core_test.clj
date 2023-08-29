@@ -665,3 +665,39 @@
               {:operation "Op. A" :operator "Davi" :H 2}
               {:operation "Op. B" :operator "Davi" :H 3}
               {:operation "Op. C" :operator "Davi" :H 3}]})))))
+
+(deftest compare-with-test
+  (is (= -1
+        ((data90/compare-with [:x :asc])
+         {:x 0}
+         {:x 1})))
+
+  (is (= 0
+        ((data90/compare-with[:x :asc])
+         {:x 1}
+         {:x 1})))
+
+  (is (= 1
+        ((data90/compare-with
+           [:x :asc])
+         {:x 1}
+         {:x 0}))))
+
+(deftest compares-test
+  (is
+    (= [{:x "A", :y 2}
+        {:x "A", :y 1}
+        {:x "B", :y 2}
+        {:x "C", :y 3}]
+      (sort
+        (data90/compares
+          [[:x :asc]
+           [:y :desc]])
+        [{:x "B"
+          :y 2}
+         {:x "A"
+          :y 1}
+         {:x "A"
+          :y 2}
+         {:x "C"
+          :y 3}]))))
