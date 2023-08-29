@@ -114,6 +114,34 @@
 
     (merge custom-aggregates-result builtin-aggregates-result)))
 
+(defn compare-ascending
+  "Comparator para ordenação ascendente."
+  [a b]
+  (compare a b))
+
+(defn compare-descending
+  "Comparator para ordenação descendente."
+  [a b]
+  (compare b a))
+
+(def name->compare
+  "Mapeamento de keyword para identificação de comparator para comparator."
+  {:asc compare-ascending
+   :desc compare-descending})
+
+(defn tree-comparator
+  "Retorna um comparator para a coleção de `sorting`."
+  [sorting]
+  (fn [a b]
+    (loop [[{accessor :accessor
+             asc-desc :comp} & sorting] sorting]
+      (let [order ((name->compare asc-desc)
+                   (accessor a)
+                   (accessor b))]
+        (if (and (zero? order) sorting)
+          (recur sorting)
+          order)))))
+
 (defn tree
   "A tree grouped, aggregated and sorted.
 
