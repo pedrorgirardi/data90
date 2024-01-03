@@ -8,3 +8,4 @@ log/
 .lsp
 data90.sublime-workspace
 .portal/
+.clj-kondo
