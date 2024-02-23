@@ -1,4 +1,4 @@
-{:paths ["src/main/clojure" "src/main/resources"]
+{:paths ["src/main/clojure"]
 
  :deps
  {org.clojure/clojure {:mvn/version "1.11.1"}}
@@ -8,7 +8,7 @@
   {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
 
   :dev
-  {:extra-paths ["src/dev/clojure" "src/dev/resources"]
+  {:extra-paths ["src/dev/clojure"]
    :extra-deps
    {org.clojure/tools.namespace {:mvn/version "1.4.4"}}}
 
