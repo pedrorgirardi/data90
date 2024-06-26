@@ -11,7 +11,19 @@
    [data90.specs])
   (:refer-clojure :exclude [flatten]))
 
-(defn dimension [x]
+(defn dimension
+  "Creates a dimension from the given input.
+   - If the input is a map, it is returned as is.
+   - If the input is a vector, it is treated as a group-by and sort-with pair.
+   - If the input is ifn, it is treated as a group-by function.
+   - Otherwise, an exception is thrown.
+   
+   Parameters:
+   - x: The input value to create a dimension from.
+   
+   Returns:
+   - A dimension created from the input value."
+  [x]
   (cond
     (map? x)
     x
@@ -31,7 +43,27 @@
   :args (s/cat :x any?)
   :ret :data90/dimension)
 
-(defn measure [x]
+(defn measure
+  "Creates a measure from the given input.
+  
+  If the input is a map, it is returned as is.
+  
+  If the input is a vector, it is expected to have three elements:
+  - ag-name: the name of the measure
+  - ag-by: the aggregation by value
+  - ag-with: the aggregation with value
+  
+  If the input is neither a map nor a vector, an exception is thrown.
+  
+  Args:
+    x: The input value to create a measure from.
+  
+  Returns:
+    A map representing the measure with the following keys:
+    - :data90/name: the name of the measure
+    - :data90/aggregate-by: the accessor function to read the value from each row
+    - :data90/aggregate-with: the aggregation function eg. :sum, :min, :max"
+  [x]
   (cond
     (map? x)
     x
