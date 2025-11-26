@@ -13,7 +13,7 @@ jobs:
           java-version: '25'
       - uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: '1.12.3.1577'
+          cli: '1.12.3.1577'
       - name: Cache dependencies
         uses: actions/cache@v4.3.0
         with:
