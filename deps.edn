@@ -1,8 +1,5 @@
 {:paths ["src/main/clojure"]
 
- :deps
- {org.clojure/clojure {:mvn/version "1.11.1"}}
-
  :aliases
  {:repl
   {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
@@ -10,7 +7,8 @@
   :dev
   {:extra-paths ["src/dev/clojure"]
    :extra-deps
-   {org.clojure/tools.namespace {:mvn/version "1.4.4"}}}
+   {org.clojure/clojure {:mvn/version "1.12.3"}
+    org.clojure/tools.namespace {:mvn/version "1.5.0"}}}
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]}
@@ -19,7 +17,7 @@
   :test-runner
   {:extra-deps
    {io.github.cognitect-labs/test-runner
-    {:git/sha "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}}
+    {:git/sha "3f288f1f16d167723ad87cc35b1dfee3c1681e10"}}
 
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test/clojure"]}}}}
